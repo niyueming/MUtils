@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author nym
@@ -31,8 +30,8 @@ public class JavaBeanParser {
         try {
             instance = superClazz.newInstance();
             Iterator<String> iterator = jsonObject.keys();
-            String methodName = null;
-            Method method = null;
+            String methodName ;
+            Method method ;
             while (iterator.hasNext()) {
                 String key = iterator.next();
                 String firstLetter = key.substring(0, 1).toUpperCase();
@@ -63,12 +62,12 @@ public class JavaBeanParser {
      * 把JSONArray转化为ArrayList<JavaBean>
      *
      * @param clazz Class<JavaBean>
-     * @param array
+     * @param array JSONArray
      * @return ArrayList<JavaBean>
      */
     public static <T> ArrayList<T> parserJSONArray(Class<T> clazz, JSONArray array) {
         ArrayList<T> list = new ArrayList<T>();
-        JSONObject jsonObject = null;
+        JSONObject jsonObject ;
         for (int i = 0; i < array.length(); i++) {
             jsonObject = array.optJSONObject(i);
             list.add(parserJSONObject(clazz, jsonObject));
