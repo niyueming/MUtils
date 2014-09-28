@@ -30,16 +30,16 @@ public class JavaBeanParser {
         try {
             instance = superClazz.newInstance();
             Iterator<String> iterator = jsonObject.keys();
-            String methodName ;
-            Method method ;
+            String methodName;
+            Method method;
             while (iterator.hasNext()) {
                 String key = iterator.next();
-                String firstLetter = key.substring(0, 1).toUpperCase();
                 Field field = getDeclaredField(superClazz, key);
                 if (key.startsWith("is")) {
                     methodName = String.format("set%s", key.substring(2));
                 } else {
-                    methodName = String.format("set%s%s", firstLetter, key.substring(1));
+                    String name = firstLetterToUpperCase(key);
+                    methodName = String.format("set%s", name);
                 }
                 method = getDeclaredMethod(superClazz, methodName, field.getType());
                 if (method != null) {
@@ -67,7 +67,7 @@ public class JavaBeanParser {
      */
     public static <T> ArrayList<T> parserJSONArray(Class<T> clazz, JSONArray array) {
         ArrayList<T> list = new ArrayList<T>();
-        JSONObject jsonObject ;
+        JSONObject jsonObject;
         for (int i = 0; i < array.length(); i++) {
             jsonObject = array.optJSONObject(i);
             list.add(parserJSONObject(clazz, jsonObject));
@@ -85,7 +85,7 @@ public class JavaBeanParser {
             return null;
         }
         JSONObject jsonObject = new JSONObject();
-        copy(object.getClass(),jsonObject);
+        copy(object.getClass(), jsonObject);
 
         return jsonObject;
     }
@@ -100,27 +100,24 @@ public class JavaBeanParser {
         }
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject;
-        for (T object : list)
-        {
+        for (T object : list) {
             jsonObject = new JSONObject();
-            copy(object.getClass(),jsonObject);
+            copy(object.getClass(), jsonObject);
             jsonArray.put(jsonObject);
         }
 
         return jsonArray;
     }
 
-    private static <T> void copy(Class<T> clazz,JSONObject jsonObject)
-    {
+    private static <T> void copy(Class<T> clazz, JSONObject jsonObject) {
         if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
-            copy(clazz.getSuperclass(),jsonObject);
+            copy(clazz.getSuperclass(), jsonObject);
         }
-        copy0(clazz,jsonObject);
+        copy0(clazz, jsonObject);
     }
 
-    private static <T> void copy0(Class<T> clazz,JSONObject jsonObject)
-    {
-        String firstLetter;
+    private static <T> void copy0(Class<T> clazz, JSONObject jsonObject) {
+        String name;
         String methodName;
         Method method;
         try {
@@ -128,12 +125,12 @@ public class JavaBeanParser {
                 if (field.getName().startsWith("is")) {
                     methodName = field.getName();
                 } else {
-                    firstLetter = field.getName().substring(0, 1).toUpperCase();
-                    methodName = String.format("get%s%s", firstLetter, field.getName().substring(1));
+                    name = firstLetterToUpperCase(field.getName());
+                    methodName = String.format("get%s", name);
                 }
-                method = getDeclaredMethod(clazz.getClass(),methodName,field.getType());
+                method = getDeclaredMethod(clazz.getClass(), methodName, field.getType());
                 if (method != null) {
-                    jsonObject.putOpt(field.getName(),method.invoke(clazz));
+                    jsonObject.putOpt(field.getName(), method.invoke(clazz));
                 }
             }
         } catch (JSONException e) {
@@ -146,7 +143,7 @@ public class JavaBeanParser {
     }
 
     public static Method getDeclaredMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
-        Method method = getDeclaredMethod0(clazz,methodName,parameterTypes);
+        Method method = getDeclaredMethod0(clazz, methodName, parameterTypes);
         return method;
     }
 
@@ -177,14 +174,13 @@ public class JavaBeanParser {
 
     }
 
-    private static Field getDeclaredField0(Class<?> clazz, String fieldName)
-    {
+    private static Field getDeclaredField0(Class<?> clazz, String fieldName) {
         Field field = null;
         try {
             field = clazz.getDeclaredField(fieldName);
             if (field == null) {
                 if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
-                    field = getDeclaredField(clazz.getSuperclass(),fieldName);
+                    field = getDeclaredField(clazz.getSuperclass(), fieldName);
                 }
             }
         } catch (NoSuchFieldException e) {
@@ -216,5 +212,18 @@ public class JavaBeanParser {
         }
 
         return null;
+    }
+
+    // 把一个字符串的第一个字母大写、效率是最高的、
+    private static String firstLetterToUpperCase(String str) {
+        if (str == null) {
+            return str;
+        }
+        if (str.length() == 0){
+            return str;
+        }
+        byte[] items = str.getBytes();
+        items[0] = (byte) ((char) items[0] - 'a' + 'A');
+        return new String(items);
     }
 }
