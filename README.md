@@ -3,6 +3,13 @@ MUtils
 
 工具类库和各种例子，慢慢添加
 
+
+### My Build Enviroment
+- Common
+ - Windows 7
+- Android
+ - [Android Studio 0.8.9](http://developer.android.com/sdk/installing/studio.html)
+
 ### License
 ```
 Copyright (C) 2013-2014 Ni YueMing <niyueming@163.com> 
@@ -14,6 +21,7 @@ MUtils is based on or derives from projects below:
   - [libVLC](http://git.videolan.org/?p=vlc.git)
 - Apache License v2
   - [VitamioBundle](https://github.com/yixia/VitamioBundle)
+  - [httpcomponents-httpasyncclient](http://hc.apache.org/httpcomponents-asyncclient-dev/index.html)
 - Other
   - [XUtils](https://github.com/wyouflf/xUtils.git)
 

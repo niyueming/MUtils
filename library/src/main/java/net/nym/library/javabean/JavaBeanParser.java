@@ -21,7 +21,7 @@ public class JavaBeanParser {
      * 把JSONObject转化为JavaBean
      *
      * @param clazz      Class<JavaBean>
-     * @param jsonObject
+     * @param jsonObject json对象
      * @return T JavaBean
      */
     public static <T> T parserJSONObject(Class<T> clazz, JSONObject jsonObject) {

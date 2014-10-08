@@ -1,4 +1,4 @@
-package net.nym.library.core.image_displayer;
+package net.nym.library.image_displayer;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
