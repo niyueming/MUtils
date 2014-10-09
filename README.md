@@ -22,6 +22,8 @@ MUtils is based on or derives from projects below:
 - Apache License v2
   - [VitamioBundle](https://github.com/yixia/VitamioBundle)
   - [httpcomponents-httpasyncclient](http://hc.apache.org/httpcomponents-asyncclient-dev/index.html)
+  - [httpcomponents-httpcomponents-client](http://hc.apache.org/httpcomponents-client-ga/index.html)
+  - [httpcomponents-httpmime](http://hc.apache.org/httpcomponents-client-ga/index.html)
 - Other
   - [XUtils](https://github.com/wyouflf/xUtils.git)
 

@@ -40,7 +40,7 @@ public abstract class AsyncTask<Params, Progress, Result> implements TaskHandler
         }
     };
 
-    private static final BlockingQueue<Runnable> sPoolWorkQueue =
+    public static final BlockingQueue<Runnable> sPoolWorkQueue =
             new LinkedBlockingQueue<Runnable>(128);
 
     /**
@@ -78,7 +78,7 @@ public abstract class AsyncTask<Params, Progress, Result> implements TaskHandler
             mTasks.offer(new Runnable() {
                 public void run() {
                     try {
-                        r.run();
+                        r.run();sPoolWorkQueue.clear();
                     } finally {
                         scheduleNext();
                     }

@@ -56,6 +56,18 @@ public class StringUtils {
         }
     }
 
+    public static boolean isNullOrEmpty(String str) {
+        if (str == null)
+        {
+            return true;
+        }
+        if (str.equals(""))
+        {
+            return true;
+        }
+        return false;
+    }
+
     /**
      *
      * @param time 毫秒时间差
