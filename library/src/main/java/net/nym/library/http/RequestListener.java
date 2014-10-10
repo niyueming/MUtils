@@ -10,6 +10,8 @@
 
 package net.nym.library.http;
 
+import java.util.ArrayList;
+
 /**
  * @author nym
  * @date 2014/10/9 0009.
@@ -27,9 +29,12 @@ public interface RequestListener<T> {
     public static final int TIMEOUT_ERROR = 2;
     public static final int WITHOUT_NETWORK_ERROR = 3;
     public static final int JSON_ERROR = 4;
+    public static final int RESULT_LIST = 5;
 
 
 	void onResponse(T object);
+
+    void onResponse(ArrayList<T> object);
 
     /**
      * @param errorCode 错误码
@@ -37,5 +42,9 @@ public interface RequestListener<T> {
      */
     void onError(int errorCode, String message);
 
+    /**暂未实现功能
+     * @param totals
+     * @param progress
+     */
     void onProgressUpdate(int totals, int progress);
 }

@@ -11,12 +11,12 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    buildTypes {
-        release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+//    buildTypes {
+//        release {
+//            runProguard false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//    }
 
     //忽略
     packagingOptions {
@@ -30,6 +30,8 @@ android {
         //imageLoader,图片加载库,按需添加
         compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
 //        compile 'org.apache.httpcomponents:httpclient:4.3.5'    //apache的httpclient项目
+//        compile 'org.apache.httpcomponents:httpcomponents-client:4.3.5'    //apache的httpcomponents-client项目
+        compile 'org.apache.httpcomponents:httpcore:4.3.2'    //apache的httpcore项目
         //apache的httpmime项目,依赖httpclient
         compile 'org.apache.httpcomponents:httpmime:4.3.5'
         //apache的httpasyncclient项目

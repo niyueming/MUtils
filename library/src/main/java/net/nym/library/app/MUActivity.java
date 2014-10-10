@@ -12,13 +12,15 @@ package net.nym.library.app;
 
 import android.app.Activity;
 
+import net.nym.library.http.HttpRequest;
+
 /**
  * @author nym
  * @date 2014/10/9 0009.
  */
 public class MUActivity extends Activity{
     private static final String TAG = "MUActivity";
-
+    private HttpRequest mHttpRequest;
 
 
     /**
@@ -51,6 +53,23 @@ public class MUActivity extends Activity{
      */
     @Override
     protected void onDestroy() {
+        if (mHttpRequest != null)
+        {
+            mHttpRequest.cancel();
+        }
         super.onDestroy();
+    }
+
+    protected <T> void prepareHttpRequest(HttpRequest<T> request)
+    {
+        mHttpRequest = request;
+    }
+
+    /**
+     *@param params Class<T>[]
+     */
+    protected <T> void executeHttpRequest(Object params)
+    {
+        mHttpRequest.execute(params);
     }
 }

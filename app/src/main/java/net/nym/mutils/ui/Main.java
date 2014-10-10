@@ -13,7 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
+import net.nym.library.http.HttpRequest;
+import net.nym.library.util.Log;
 import net.nym.mutils.R;
+
+import org.json.JSONObject;
 
 
 public class Main extends ActionBarActivity
@@ -42,6 +46,10 @@ public class Main extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+        Log.setDebug(true);
+        new HttpRequest.Builder<JSONObject>(this,"http://192.168.105.253/ECShop/upload/server/?url=user/code").setMethod(HttpRequest.Method.GET)
+        .addParameter("phoneNumber", "15110199138")
+        .build().execute(JSONObject.class);
     }
 
     @Override

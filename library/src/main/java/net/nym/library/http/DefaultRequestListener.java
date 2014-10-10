@@ -12,14 +12,17 @@ package net.nym.library.http;
 
 import android.content.Context;
 
+import net.nym.library.util.Log;
 import net.nym.library.util.Toaster;
+
+import java.util.ArrayList;
 
 /**
  * @author nym
  * @date 2014/10/9 0009.
  * @since 1.0
  */
-public abstract class DefaultRequestListener<T> implements RequestListener<T> {
+public class DefaultRequestListener<T> implements RequestListener<T> {
     Context mContext;
 
     public DefaultRequestListener(Context context) {
@@ -48,6 +51,16 @@ public abstract class DefaultRequestListener<T> implements RequestListener<T> {
 //                Toaster.toaster(mContext, RequestListener.ERROR_JSON_PARSE);
 //                break;
 //        }
+    }
+
+    @Override
+    public void onResponse(T object) {
+        Log.i("onResponse=%s",object+ "");
+    }
+
+    @Override
+    public void onResponse(ArrayList<T> object) {
+        Log.i("onResponseList=%s",object+ "");
     }
 
     @Override

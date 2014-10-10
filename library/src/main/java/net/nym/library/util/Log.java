@@ -26,10 +26,18 @@ import java.util.MissingFormatArgumentException;
 public class Log {
 	public static final String TAG = "MUtils";
 	public static final String DEBUG_TAG = "debug.net.nym.library";
+    private static boolean isDebug = BuildConfig.DEBUG;
+
+    public static  void setDebug(boolean debug)
+    {
+        isDebug = debug;
+    }
 
 	public static void i(String msg, Object... args) {
 		try {
-			if (BuildConfig.DEBUG)
+			if (isDebug)
+
+
 				android.util.Log.i(DEBUG_TAG, String.format(msg, args));
 		} catch (MissingFormatArgumentException e) {
 			android.util.Log.e(TAG, "my.Log", e);
@@ -39,7 +47,7 @@ public class Log {
 
 	public static void d(String msg, Object... args) {
 		try {
-			if (BuildConfig.DEBUG) 
+			if (isDebug)
 				android.util.Log.d(DEBUG_TAG, String.format(msg, args));
 		} catch (MissingFormatArgumentException e) {
 			android.util.Log.e(TAG, "my.Log", e);
@@ -50,7 +58,7 @@ public class Log {
 	public static void w(String msg, Object... args) {
 		// TODO Auto-generated method stub
 		try {
-			if (BuildConfig.DEBUG) 
+			if (isDebug)
 				android.util.Log.w(DEBUG_TAG, String.format(msg, args));
 		} catch (MissingFormatArgumentException e) {
 			android.util.Log.e(TAG, "my.Log", e);
@@ -73,7 +81,7 @@ public class Log {
 	
 	public static void println(String msg,Object... args)
 	{
-		if(BuildConfig.DEBUG)
+		if(isDebug)
 			System.out.println(String.format(msg, args));
 	}
 
