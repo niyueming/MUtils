@@ -18,10 +18,33 @@ import android.os.Handler;
 import android.os.Message;
 
 import net.nym.library.task.AsyncTask;
+import net.nym.library.util.Log;
 
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.config.ConnectionConfig;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.nio.client.HttpAsyncClient;
+import org.apache.http.nio.client.methods.HttpAsyncMethods;
+import org.apache.http.nio.client.util.HttpAsyncClientUtils;
+import org.apache.http.nio.protocol.HttpAsyncRequestProducer;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpRetryException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author nym
@@ -32,19 +55,36 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
 
     private RequestListener<T> mRequestListener;
     private ErrorHandler mErrorHandler = new ErrorHandler();
-    private Method mMethod;
+    HttpAsyncRequestProducer mHttpAsyncRequestProducer;
     private Dialog mDialog;
-
+    private CloseableHttpAsyncClient mClient;
 
     public enum Method{
         GET,
-        POST;
+        POST,
+        PUT,
+        TRACE,
+        Options,
+        Delete
     }
-    public HttpRequest(Method method,RequestListener listener)
-    {
-        mMethod = method;
-        mRequestListener = listener;
+//    public HttpRequest(Method method,RequestListener listener)
+//    {
+//        mMethod = method;
+//        mRequestListener = listener;
+//    }
+
+    public void setHttpAsyncRequestProducer(HttpAsyncRequestProducer producer) {
+        this.mHttpAsyncRequestProducer = producer;
     }
+
+    public void setClient(CloseableHttpAsyncClient mClient) {
+        this.mClient = mClient;
+    }
+
+    public void setRequestListener(RequestListener<T> mRequestListener) {
+        this.mRequestListener = mRequestListener;
+    }
+
 //    class MResponseHandler<T> implements ResponseHandler<T> {
 
 //
@@ -117,6 +157,34 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
             return null;
         }
 
+        try {
+            mClient.execute(mHttpAsyncRequestProducer.getTarget(), mHttpAsyncRequestProducer.generateRequest(),new FutureCallback<HttpResponse>() {
+                @Override
+                public void completed(HttpResponse result) {
+
+                }
+
+                @Override
+                public void failed(Exception ex) {
+                    mErrorHandler.sendEmptyMessage(RequestListener.OTHER_ERROR);
+                }
+
+                @Override
+                public void cancelled() {
+                    Log.i("request is cancelled");
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (HttpException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                mClient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return instance;
     }
 
@@ -170,16 +238,127 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
     public static class Builder<T>{
         private RequestListener<T> mRequestListener;
         private Context mContext;
-        public Builder(Context context)
+        private Method mMethod = Method.GET;
+        private ArrayList<NameValuePair> mParams = new ArrayList<NameValuePair>();
+        private HashMap<String,File> mFiles = new HashMap<String, File>();
+        private String mUrl;
+
+        public Builder(Context context,String url)
         {
             mContext = context;
+            mUrl = url;
         }
 
-        public Builder setRequestListener(RequestListener<T> requestListener)
+        public Builder<T> setUrl(String url)
+        {
+            this.mUrl = url;
+            return this;
+        }
+
+        public Builder<T> setRequestListener(RequestListener<T> requestListener)
         {
             this.mRequestListener = requestListener;
             return this;
         }
+
+        public Builder<T> setMethod( Method method)
+        {
+            this.mMethod = method;
+            return this;
+        }
+
+        public Builder<T> addParameter(String name,String value)
+        {
+            NameValuePair pair = new BasicNameValuePair(name,value);
+            mParams.add(pair);
+            return this;
+        }
+
+        public Builder<T> addFile(String name,File file)
+        {
+            if (mMethod == Method.POST)
+            {
+                mFiles.put(name,file);
+            }
+            else
+            {
+                throw new RuntimeException("it is not httppost");
+            }
+
+            return this;
+        }
+
+
+        public HttpRequest<T> build()
+        {
+            HttpRequest<T> request = new HttpRequest<T>();
+            if (mMethod == null)
+            {
+                mMethod = Method.GET;
+            }
+            HttpAsyncRequestProducer producer = null;
+            switch (mMethod)
+            {
+                case GET:
+                    final StringBuffer sb = new StringBuffer();
+                    for (NameValuePair pair : mParams)
+                    {
+                        sb.append(pair.getName()).append('=').append(pair.getValue()).append('&');
+                    }
+                    if (sb.length() > 0)
+                    {
+                        sb.deleteCharAt(sb.length() - 1);
+                    }
+                    if (mUrl.contains("?"))
+                    {
+                        mUrl += "&" + sb.toString();
+                    }
+                    else
+                    {
+                        mUrl += "?" + sb.toString();
+                    }
+                    producer = HttpAsyncMethods.createGet(mUrl);
+                    break;
+                case POST:
+                    HttpPost post = new HttpPost(mUrl);
+                    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+                    for (NameValuePair pair : mParams)
+                    {
+                        builder.addTextBody(pair.getName(),pair.getValue());
+                        Log.println("%s:%s", pair.getName() + "",pair.getValue() + "");
+                    }
+                    if (mFiles.size() > 0) {
+                        for (Map.Entry<String, File> entry : mFiles.entrySet()) {
+                            File file = (File) entry.getValue();
+                            Log.println("%s:%s", entry.getKey(), file.getAbsolutePath()
+                                    + "");
+                            if (file.exists()) {
+                                builder.addBinaryBody(entry.getKey(), file, ContentType.create(MimeTypeUtils.getMimeType(file.getName())), file.getName());
+                            } else {
+                                Log.println("%s is not exists", file.getAbsolutePath()
+                                        + "");
+                                continue;
+                            }
+                        }
+                    }
+                    post.setEntity(builder.build());
+                    producer = HttpAsyncMethods.create(post);
+                    break;
+                default:
+                    Log.i("%s", "only temporarily support get and post method now");
+                    break;
+            }
+            Log.println("url=%s", mUrl);
+            request.setHttpAsyncRequestProducer(producer);
+
+            request.setRequestListener(mRequestListener);
+
+            CloseableHttpAsyncClient client = HttpAsyncClients.createDefault();
+            request.setClient(client);
+
+            return request;
+        }
+
     }
 
     private class ErrorHandler extends Handler {
