@@ -47,8 +47,11 @@ public class Main extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         Log.setDebug(true);
-        new HttpRequest.Builder<JSONObject>(this,"http://192.168.105.253/ECShop/upload/server/?url=user/code").setMethod(HttpRequest.Method.GET)
-        .addParameter("phoneNumber", "15110199138")
+        new HttpRequest.Builder<JSONObject>(this,"http://192.168.105.253/ECShop/upload/server/?url=article/list").setMethod(HttpRequest.Method.GET)
+        .setMethod(HttpRequest.Method.POST)
+//        .addParameter("cat_id", "1")
+        .addParameter("pagination[page]", "1")
+        .addParameter("pagination[count]", "10")
         .build().execute(JSONObject.class);
     }
 

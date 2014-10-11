@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2014  Ni YueMing<niyueming@163.com>
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package net.nym.library.image_displayer;
 
 import android.graphics.Bitmap;
@@ -32,7 +42,7 @@ public class CircleBitmapDisplayer implements BitmapDisplayer {
 
 	int mRadius;
 	int mMargin;
-	public CircleBitmapDisplayer(int radius,int margin) {
+	public CircleBitmapDisplayer(int radius, int margin) {
 		mRadius = radius;
 		mMargin = margin;
 	}
@@ -152,7 +162,7 @@ public class CircleBitmapDisplayer implements BitmapDisplayer {
 					destRect, width, height,radius);
 		} catch (OutOfMemoryError e) {
 			L.e(e,
-					"Can't create bitmap with circle. Not enough memory.");
+                    "Can't create bitmap with circle. Not enough memory.");
 			roundBitmap = bitmap;
 		}
 
@@ -214,7 +224,7 @@ public class CircleBitmapDisplayer implements BitmapDisplayer {
 
 		@Override
 		public void draw(Canvas canvas) {
-			canvas.drawCircle(mRect.width()/2, mRect.height()/2, cornerRadius, paint);
+			canvas.drawCircle(mRect.width()/2 + margin, mRect.height()/2 + margin, cornerRadius, paint);
 		}
 
 		@Override

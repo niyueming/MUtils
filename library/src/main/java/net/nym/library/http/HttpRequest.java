@@ -202,6 +202,7 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
             if (response == null)
             {
                 mErrorHandler.sendEmptyMessage(RequestListener.OTHER_ERROR);
+                instance = null;
             }
             else
             {
@@ -211,6 +212,7 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
                     if(httpEntity == null)
                     {
                         mErrorHandler.sendEmptyMessage(RequestListener.OTHER_ERROR);
+                        instance = null;
                     }
                     else
                     {
@@ -228,6 +230,7 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
                             }
                             else {
                                 mErrorHandler.sendEmptyMessage(RequestListener.JSON_ERROR);
+                                instance = null;
                             }
                         }
                         else if (JSONArray.class.isInstance(instance))
@@ -237,6 +240,7 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
                             }
                             else {
                                 mErrorHandler.sendEmptyMessage(RequestListener.JSON_ERROR);
+                                instance = null;
                             }
                         }
                         else
@@ -252,9 +256,11 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
                                     message.what = RequestListener.RESULT_LIST;
                                     message.obj = list;
                                     mErrorHandler.sendMessage(message);
+                                    instance = null;
                                     break;
                                 case JSON_TYPE_ERROR:
                                     mErrorHandler.sendEmptyMessage(RequestListener.JSON_ERROR);
+                                    instance = null;
                                     break;
 
                             }
@@ -266,6 +272,7 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
                 {
                     Log.i("reasonPhrase=%s",response.getStatusLine().getReasonPhrase() + "");
                     mErrorHandler.sendEmptyMessage(RequestListener.OTHER_ERROR);
+                    instance = null;
                 }
             }
         } catch (JSONException e) {
