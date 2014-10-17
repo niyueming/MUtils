@@ -41,10 +41,8 @@ import com.nostra13.universalimageloader.utils.L;
 public class CircleBitmapDisplayer implements BitmapDisplayer {
 
 	int mRadius;
-	int mMargin;
-	public CircleBitmapDisplayer(int radius, int margin) {
+	public CircleBitmapDisplayer(int radius) {
 		mRadius = radius;
-		mMargin = margin;
 	}
 	
 	@Override
@@ -53,7 +51,7 @@ public class CircleBitmapDisplayer implements BitmapDisplayer {
 			throw new IllegalArgumentException("ImageAware should wrap ImageView. ImageViewAware is expected.");
 		}
 		
-		imageAware.setImageDrawable(new CircleCornerDrawable(bitmap, mRadius, mMargin));
+		imageAware.setImageDrawable(new CircleCornerDrawable(bitmap, mRadius));
 	}
 
 	/**
@@ -191,19 +189,17 @@ public class CircleBitmapDisplayer implements BitmapDisplayer {
 	public static class CircleCornerDrawable extends Drawable {
 
 		protected final float cornerRadius;
-		protected final int margin;
 
 		protected final RectF mRect = new RectF(),
 				mBitmapRect;
 		protected final BitmapShader bitmapShader;
 		protected final Paint paint;
 
-		public CircleCornerDrawable(Bitmap bitmap, int cornerRadius, int margin) {
+		public CircleCornerDrawable(Bitmap bitmap, int cornerRadius) {
 			this.cornerRadius = cornerRadius;
-			this.margin = margin;
 
 			bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-			mBitmapRect = new RectF (margin, margin, bitmap.getWidth() - margin, bitmap.getHeight() - margin);
+			mBitmapRect = new RectF (0, 0, bitmap.getWidth() , bitmap.getHeight() );
 			
 			paint = new Paint();
 			paint.setAntiAlias(true);
@@ -213,18 +209,18 @@ public class CircleBitmapDisplayer implements BitmapDisplayer {
 		@Override
 		protected void onBoundsChange(Rect bounds) {
 			super.onBoundsChange(bounds);
-			mRect.set(margin, margin, bounds.width() - margin, bounds.height() - margin);
-			
+			mRect.set(0, 0, bounds.width(), bounds.height());
+
 			// Resize the original bitmap to fit the new bound
 			Matrix shaderMatrix = new Matrix();
 			shaderMatrix.setRectToRect(mBitmapRect, mRect, Matrix.ScaleToFit.FILL);
 			bitmapShader.setLocalMatrix(shaderMatrix);
-			
+
 		}
 
 		@Override
 		public void draw(Canvas canvas) {
-			canvas.drawCircle(mRect.width()/2 + margin, mRect.height()/2 + margin, cornerRadius, paint);
+			canvas.drawCircle(mRect.width()/2, mRect.height()/2, cornerRadius, paint);
 		}
 
 		@Override
