@@ -2,6 +2,7 @@ package net.nym.library.util;
 
 import android.annotation.TargetApi;
 import android.os.Environment;
+import android.telephony.TelephonyManager;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -124,6 +125,31 @@ public class Utils {
             return Environment.isExternalStorageRemovable();
         }
         return true;
+    }
+
+    /**
+     * Role:Telecom service providers获取手机服务商信息 <BR>
+     *
+     * @param telephonyManager
+     * @return
+     */
+    public static String getProvidersName(TelephonyManager telephonyManager) {
+        String ProvidersName = null;
+        // 返回唯一的用户ID;就是这张卡的编号神马的
+        String IMSI = telephonyManager.getSubscriberId();
+        // IMSI号前面3位460是国家，紧接着后面2位00 02是中国移动，01是中国联通，03是中国电信。
+        // System.out.println(IMSI);
+        if (IMSI != null) {
+            if (IMSI.startsWith("46000") || IMSI.startsWith("46002")) {
+                ProvidersName = "中国移动";
+            } else if (IMSI.startsWith("46001")) {
+                ProvidersName = "中国联通";
+            } else if (IMSI.startsWith("46003")) {
+                ProvidersName = "中国电信";
+            }
+
+        }
+        return ProvidersName;
     }
 
 //    /**
