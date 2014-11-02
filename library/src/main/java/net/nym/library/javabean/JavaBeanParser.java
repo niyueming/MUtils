@@ -35,15 +35,17 @@ public class JavaBeanParser {
             while (iterator.hasNext()) {
                 String key = iterator.next();
                 Field field = getDeclaredField(superClazz, key);
-                if (key.startsWith("is")) {
-                    methodName = String.format("set%s", key.substring(2));
-                } else {
-                    String name = firstLetterToUpperCase(key);
-                    methodName = String.format("set%s", name);
-                }
-                method = getDeclaredMethod(superClazz, methodName, field.getType());
-                if (method != null) {
-                    method.invoke(instance, jsonObject.opt(key));
+                if (field != null){
+                    if (key.startsWith("is")) {
+                        methodName = String.format("set%s", key.substring(2));
+                    } else {
+                        String name = firstLetterToUpperCase(key);
+                        methodName = String.format("set%s", name);
+                    }
+                    method = getDeclaredMethod(superClazz, methodName, field.getType());
+                    if (method != null) {
+                        method.invoke(instance, jsonObject.opt(key));
+                    }
                 }
 
             }
