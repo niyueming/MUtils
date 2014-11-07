@@ -13,9 +13,15 @@ public class NetUtil {
 	 * @return
 	 */
 	public static String URLEncode(String text) {
+
+		return URLEncode(text,"UTF-8");
+
+	}
+
+	public static String URLEncode(String text,String charsetName) {
 		String result = null;
 		try {
-			result = URLEncoder.encode(text, "UTF-8");
+			result = URLEncoder.encode(text, charsetName);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -31,9 +37,13 @@ public class NetUtil {
 	 * @return
 	 */
 	public static String URLDecode(String text) {
+		return URLDecode(text,"UTF-8");
+
+	}
+	public static String URLDecode(String text,String charsetName) {
 		String result = null;
 		try {
-			result = URLDecoder.decode(text, "UTF-8");
+			result = URLDecoder.decode(text, charsetName);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
