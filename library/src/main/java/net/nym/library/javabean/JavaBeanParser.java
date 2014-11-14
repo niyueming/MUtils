@@ -69,10 +69,13 @@ public class JavaBeanParser {
      */
     public static <T> ArrayList<T> parserJSONArray(Class<T> clazz, JSONArray array) {
         ArrayList<T> list = new ArrayList<T>();
-        JSONObject jsonObject;
-        for (int i = 0; i < array.length(); i++) {
-            jsonObject = array.optJSONObject(i);
-            list.add(parserJSONObject(clazz, jsonObject));
+        if (array != null)
+        {
+            JSONObject jsonObject;
+            for (int i = 0; i < array.length(); i++) {
+                jsonObject = array.optJSONObject(i);
+                list.add(parserJSONObject(clazz, jsonObject));
+            }
         }
 
         return list;
