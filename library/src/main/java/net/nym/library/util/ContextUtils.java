@@ -113,6 +113,16 @@ public class ContextUtils {
         return version;
     }
 
+    public static String getVersionName(Context ctx) {
+        String versionName = null;
+        try {
+            versionName = ctx.getPackageManager().getPackageInfo(ctx.getApplicationInfo().packageName, 0).versionName;
+        } catch (Exception e) {
+            Log.e("getVersionInt", e);
+        }
+        return versionName;
+    }
+
     /**
      * Returns the unique device ID, for example, the IMEI for GSM and the MEID
      * or ESN for CDMA phones. Return null if device ID is not available.
