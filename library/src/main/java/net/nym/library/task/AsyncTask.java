@@ -3,9 +3,9 @@ package net.nym.library.task;
 import android.os.*;
 import android.os.Process;
 
+
 import net.nym.library.BuildConfig;
 
-import java.util.ArrayDeque;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -139,7 +139,7 @@ public abstract class AsyncTask<Params, Progress, Result> implements TaskHandler
                 try {
                     postResultIfNotInvoked(get());
                 } catch (InterruptedException e) {
-                    android.util.Log.w(BuildConfig.PACKAGE_NAME, e);
+                    android.util.Log.w(BuildConfig.APPLICATION_ID, e);
                 } catch (ExecutionException e) {
                     throw new RuntimeException("An error occured while executing doInBackground()",
                             e.getCause());

@@ -13,7 +13,8 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false      //新版的替代方法
+//            runProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "net.nym.library"
+//        applicationId "net.nym.library"
         minSdkVersion 8
         targetSdkVersion 20
         versionCode 1
@@ -19,12 +19,14 @@ android {
     }
     buildTypes {
         release {
-            runProguard true
+            minifyEnabled true      //新版的替代方法
+//            runProguard true
             proguardFiles 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
-            runProguard false
+            minifyEnabled false      //新版的替代方法
+//            runProguard true
             proguardFiles 'proguard-rules.pro'
         }
     }
