@@ -68,13 +68,23 @@ public class StringUtils {
         return false;
     }
 
+    public static String subString(String str,int end)
+    {
+        String result = str;
+        if (str.length() > end)
+        {
+            result = str.substring(0,end);
+        }
+        return result;
+    }
+
     /**
      * 半角转换为全角
      *
      * @param input
      * @return
      */
-    public static String ToDBC(String input) {
+    public static String toDBC(String input) {
         char[] c = input.toCharArray();
         for (int i = 0; i < c.length; i++) {
             if (c[i] == 12288) {
@@ -84,14 +94,14 @@ public class StringUtils {
             if (c[i] > 65280 && c[i] < 65375)
                 c[i] = (char) (c[i] - 65248);
         }
-        return new String(c);
+        return new String(c).replaceAll(":",": ");
     }
 
     /**
      *
      * @param time 毫秒时间差
      * @return 返回00:00:00 格式
-    */
+     */
     public static String generateTime(long time) {
         int totalSeconds = (int) (time / 1000);
         int seconds = totalSeconds % 60;

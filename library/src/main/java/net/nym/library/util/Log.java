@@ -36,8 +36,6 @@ public class Log {
 	public static void i(String msg, Object... args) {
 		try {
 			if (isDebug)
-
-
 				android.util.Log.i(DEBUG_TAG, String.format(msg, args));
 		} catch (MissingFormatArgumentException e) {
 			android.util.Log.e(TAG, "my.Log", e);
@@ -56,7 +54,6 @@ public class Log {
 	}
 	
 	public static void w(String msg, Object... args) {
-		// TODO Auto-generated method stub
 		try {
 			if (isDebug)
 				android.util.Log.w(DEBUG_TAG, String.format(msg, args));

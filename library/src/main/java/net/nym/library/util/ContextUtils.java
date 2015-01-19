@@ -3,6 +3,8 @@ package net.nym.library.util;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.ClipData;
+import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -34,7 +36,7 @@ public class ContextUtils {
      * @return
      */
     public static boolean isFroyoOrLater() {
-        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO;
     }
 
     /**
@@ -43,7 +45,7 @@ public class ContextUtils {
      * @return
      */
     public static boolean isGingerbreadOrLater() {
-        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD;
     }
 
     /**
@@ -52,7 +54,7 @@ public class ContextUtils {
      * @return
      */
     public static boolean isHoneycombOrLater() {
-        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     }
 
     /**
@@ -61,7 +63,7 @@ public class ContextUtils {
      * @return
      */
     public static boolean isICSOrLater() {
-        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
     }
 
     /**
@@ -70,7 +72,7 @@ public class ContextUtils {
      * @return
      */
     public static boolean isJellyBeanOrLater() {
-        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
     }
 
     /**
@@ -79,8 +81,8 @@ public class ContextUtils {
      * @return
      */
     public static boolean isKitkatOrLater() {
-    return android.os.Build.VERSION.SDK_INT >=
-    android.os.Build.VERSION_CODES.KITKAT;
+        return Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.KITKAT;
     }
 
     /**
@@ -111,16 +113,6 @@ public class ContextUtils {
             Log.e("getVersionInt", e);
         }
         return version;
-    }
-
-    public static String getVersionName(Context ctx) {
-        String versionName = null;
-        try {
-            versionName = ctx.getPackageManager().getPackageInfo(ctx.getApplicationInfo().packageName, 0).versionName;
-        } catch (Exception e) {
-            Log.e("getVersionInt", e);
-        }
-        return versionName;
     }
 
     /**
@@ -329,5 +321,36 @@ public class ContextUtils {
         request.setDestinationInExternalPublicDir(dir_name,file_name);
         request.setTitle(title_name);
         return manager.enqueue(request);
+    }
+
+
+    public static void clipboardManagerCopy(Context context,String message)
+    {
+        if (isHoneycombOrLater())
+        {
+            clipboardManagerCopyHoneycomb(context,message);
+        }
+        else
+        {
+            android.text.ClipboardManager c = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            c.setText(message);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static void clipboardManagerCopy(Context context,ClipData clipData)
+    {
+        if (isHoneycombOrLater())
+        {
+            android.content.ClipboardManager c = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            c.setPrimaryClip(clipData);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private static void clipboardManagerCopyHoneycomb(Context context,String message)
+    {
+        android.content.ClipboardManager c = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        c.setPrimaryClip(ClipData.newPlainText(null, message));
     }
 }
