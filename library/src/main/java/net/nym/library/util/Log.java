@@ -63,6 +63,16 @@ public class Log {
 		}
 	}
 
+	public static void v(String msg, Object... args) {
+		try {
+			if (isDebug)
+				android.util.Log.v(DEBUG_TAG, String.format(msg, args));
+		} catch (MissingFormatArgumentException e) {
+			android.util.Log.e(TAG, "my.Log", e);
+			android.util.Log.w(TAG, msg);
+		}
+	}
+
 	public static void e(String msg, Object... args) {
 		try {
 				android.util.Log.e(DEBUG_TAG, String.format(msg, args));
