@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -317,6 +318,12 @@ public class ContextUtils {
         // 在通知栏中显示
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);
+        //如果存放地址已存在该文件，删除
+        File file = new File(Environment.getExternalStoragePublicDirectory(dir_name),file_name);
+        if (file.exists())
+        {
+            file.delete();
+        }
         // sdcard的目录下的download文件夹
         request.setDestinationInExternalPublicDir(dir_name,file_name);
         request.setTitle(title_name);
