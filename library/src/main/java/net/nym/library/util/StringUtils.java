@@ -110,4 +110,28 @@ public class StringUtils {
 
         return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes, seconds) : String.format("%02d:%02d", minutes, seconds);
     }
+
+    /**
+     * 把字符串的第start位到end位（不包括end）用“*”号代替
+     * @param str 要代替的字符串
+     * @return
+     */
+
+    public static String replaceSubString(String str,int start,int end){
+        String sub1="";
+        String sub2="";
+        StringBuffer sb=new StringBuffer();
+        try {
+            sub1 = str.substring(0, start);
+            sub2 = str.substring(end, str.length());
+            sb.append(sub1);
+            for(int i=0;i<end -start;i++){
+                sb=sb.append("*");
+            }
+            sb.append(sub2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
 }

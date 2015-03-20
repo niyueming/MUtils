@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -23,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -331,6 +334,9 @@ public class ContextUtils {
     }
 
 
+    /**
+     * 剪切板
+     * */
     public static void clipboardManagerCopy(Context context,String message)
     {
         if (isHoneycombOrLater())
@@ -359,5 +365,23 @@ public class ContextUtils {
     {
         android.content.ClipboardManager c = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         c.setPrimaryClip(ClipData.newPlainText(null, message));
+    }
+
+
+    /**
+     * 获取全部图片地址
+     * @return
+     */
+    public static ArrayList<String> getAllImages(Context context){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Uri uri = intent.getData();
+        ArrayList<String> list = new ArrayList<String>();
+        String[] proj ={MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);//managedQuery(uri, proj, null, null, null);
+        while(cursor.moveToNext()){
+            String path =cursor.getString(0);
+            list.add(new File(path).getAbsolutePath());
+        }
+        return list;
     }
 }

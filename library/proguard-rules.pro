@@ -27,7 +27,7 @@
 -keepattributes Exceptions,InnerClasses,Signature,*Annotation*,SourceFile,LineNumberTable
 -dontpreverify
 -verbose
--dontwarn android.**,android.support.v4.**,org.apache.http.**,android.webkit.WebView,**.R$*,com.nostra13.universalimageloader.**
+-dontwarn android.**,android.support.v4.**,org.apache.http.**,android.webkit.WebView,**.R$*,com.nostra13.universalimageloader.**,org.bouncycastle.**
 
 -keep class android.support.v4.** {
     <fields>;
