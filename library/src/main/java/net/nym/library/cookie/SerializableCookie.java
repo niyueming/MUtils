@@ -20,6 +20,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ *
+ * -keep class * extends java.io.Serializable {
+ * <fields>;
+ * <methods>;
+ * }
+ *
  * @author nym
  * @date 2015/2/10 0010.
  * @since 1.0

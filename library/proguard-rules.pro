@@ -80,6 +80,12 @@
     <methods>;
 }
 
+-keep class * extends java.io.Serializable {
+    <fields>;
+    <methods>;
+}
+
+
 -keep class **.R {
     <fields>;
     <methods>;
