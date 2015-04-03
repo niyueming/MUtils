@@ -1,6 +1,8 @@
 package net.nym.library.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -109,6 +111,66 @@ public class StringUtils {
         int hours = totalSeconds / 3600;
 
         return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes, seconds) : String.format("%02d:%02d", minutes, seconds);
+    }
+
+    /**
+     * 返回默认格式"yyyy-MM-dd"的时间
+     * @param time Unix long型时间，秒
+     *
+     *
+     * */
+    public static String parseLongToTime(long time)
+    {
+        return parseLongToTime("yyyy-MM-dd",time);
+    }
+
+    /**
+     * @param time Unix long型时间，秒
+     *
+     *
+     * */
+    public static String parseLongToTime(String format,long time)
+    {
+        long now = System.currentTimeMillis();
+        time *= 1000;
+        long interval = (now - time)<0 ? 0:(now - time);
+        if (interval < 24*60*60*1000)
+        {
+            if (interval > 60*60*1000)
+            {
+                return interval/(60*60*1000) + "小时前";
+            }
+            else {
+                return (interval/(60*1000) == 0 ? 1:interval/(60*1000)) + "分钟前";
+            }
+        }
+        else {
+            return getDateToString(format,time);
+        }
+    }
+
+    /**
+     *
+     * @param time long型时间，毫秒
+     * @param format 如："yyyy-MM-dd HH:mm:ss"
+     * @return 返回format格式的时间
+     *
+     * 时间戳转换成字符窜
+     * */
+    public static String getDateToString(String format,long time) {
+        Date d = new Date(time);
+        SimpleDateFormat sf = new SimpleDateFormat(format);
+        return sf.format(d);
+    }
+
+    /**
+     * 返回默认格式"yyyy-MM-dd HH:mm:ss"的时间
+     * @param time long型时间，毫秒
+     *
+     *
+     * */
+    public static String getDateToString(long time) {
+        return getDateToString("yyyy-MM-dd HH:mm:ss",time);
     }
 
     /**

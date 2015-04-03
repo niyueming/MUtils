@@ -89,29 +89,6 @@ public class Utils {
         return new DecimalFormat(pattern);
     }
 
-    /**
-     *
-     * @param time long型时间，毫秒
-     * @param format 如："yyyy-MM-dd HH:mm:ss"
-     * @return 返回format格式的时间
-     *
-     * 时间戳转换成字符窜
-     * */
-    public static String getDateToString(String format,long time) {
-        Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat(format);
-        return sf.format(d);
-    }
-
-    /**
-     * 返回默认格式"yyyy-MM-dd HH:mm:ss"的时间
-     * @param time long型时间，毫秒
-     *
-     *
-     * */
-    public static String getDateToString(long time) {
-        return getDateToString("yyyy-MM-dd HH:mm:ss",time);
-    }
 
     /**
      * Check if external storage is built-in or removable.
