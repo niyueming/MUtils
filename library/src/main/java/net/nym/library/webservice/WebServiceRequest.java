@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class WebServiceRequest extends AsyncTask<Map<String,Object>, Integer, String> {
 
-    private RequestListener<String> mRequestListener;
+    private RequestListener mRequestListener;
     private ErrorHandler mErrorHandler = new ErrorHandler();
     private Dialog mDialog;
     private boolean isShowDialog;

@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * @date 2014/10/9 0009.
  * @since 1.0
  */
-public class DefaultRequestListener<T> implements RequestListener<T> {
+public class DefaultRequestListener implements RequestListener {
     Context mContext;
 
     public DefaultRequestListener(Context context) {
@@ -36,32 +36,13 @@ public class DefaultRequestListener<T> implements RequestListener<T> {
     @Override
     public void onError(int errorCode, String message) {
         Toaster.toaster(mContext, message == null ? "" : message);
-//        switch(errorCode)
-//        {
-//            case RequestListener.IO_ERROR:
-//                Toaster.toaster(mContext, RequestListener.ERROR_OTHER);
-//                break;
-//            case RequestListener.WITHOUT_NETWORK_ERROR:
-//                Toaster.toaster(mContext, RequestListener.ERROR_WITHOUT_NETWORK);
-//                break;
-//            case RequestListener.TIMEOUT_ERROR:
-//                Toaster.toaster(mContext, RequestListener.ERROR_TIMEOUT);
-//                break;
-//            case RequestListener.JSON_ERROR:
-//                Toaster.toaster(mContext, RequestListener.ERROR_JSON_PARSE);
-//                break;
-//        }
     }
 
     @Override
-    public void onResponse(T object) {
+    public void onResponse(String object) {
         Log.i("onResponse=%s",object+ "");
     }
 
-    @Override
-    public void onResponse(ArrayList<T> object) {
-        Log.i("onResponseList=%s",object+ "");
-    }
 
     @Override
     public void onProgressUpdate(int totals, int progress)

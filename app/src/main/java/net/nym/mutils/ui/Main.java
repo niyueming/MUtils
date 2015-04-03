@@ -1,23 +1,24 @@
 package net.nym.mutils.ui;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 
+import net.nym.library.http.DefaultRequestListener;
 import net.nym.library.http.HttpRequest;
 import net.nym.library.util.Log;
 import net.nym.mutils.R;
 
-import org.json.JSONObject;
+import java.util.LinkedHashMap;
 
 
 public class Main extends ActionBarActivity
@@ -47,12 +48,11 @@ public class Main extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         Log.setDebug(true);
-        new HttpRequest.Builder<JSONObject>(this,"http://192.168.105.253/ECShop/upload/server/?url=article/list").setMethod(HttpRequest.Method.GET)
-        .setMethod(HttpRequest.Method.POST)
-//        .addParameter("cat_id", "1")
-        .addParameter("pagination[page]", "1")
-        .addParameter("pagination[count]", "10")
-        .build().execute(JSONObject.class);
+
+        LinkedHashMap<String,Object> map = new LinkedHashMap<String, Object>();
+        map.put("pagination[page]", "1");
+        map.put("pagination[count]", "10");
+        new HttpRequest(this,"http://192.168.105.253/ECShop/upload/server/?url=article/list",HttpRequest.Method.GET,new DefaultRequestListener(this),true).execute(map);
     }
 
     @Override
