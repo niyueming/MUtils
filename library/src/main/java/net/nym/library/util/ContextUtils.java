@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,6 +172,28 @@ public class ContextUtils {
         ((WindowManager) context.getSystemService(Activity.WINDOW_SERVICE))
                 .getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics;
+    }
+
+    /**
+     *
+     * 广播相册扫描文件
+     *
+     * */
+    public static void mediaScanFile(Activity activity,Uri uri)
+    {
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,uri);
+        activity.sendBroadcast(intent);
+    }
+
+    public static void insertMedia(Activity activity,File file)
+    {
+        try {
+            //插入图库
+            MediaStore.Images.Media.insertImage(activity.getContentResolver(), file.getAbsolutePath(), file.getName(), null);
+            mediaScanFile(activity,Uri.fromFile(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
