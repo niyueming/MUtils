@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="scaleStyle" format="reference" />
+
+    <declare-styleable name="Scale">
+
+        <!-- <attr name="ScaleRow" format="integer" /> -->
+        <attr name="ScaleColumn" format="integer" />
+    </declare-styleable>
+</resources>
