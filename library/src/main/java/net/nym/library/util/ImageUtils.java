@@ -89,22 +89,24 @@ public class ImageUtils {
      * */
     public static Uri compressImage(Uri imageUri,String targetPath,long targetSize) {
         Bitmap image = BitmapFactory.decodeFile(imageUri.getPath());
-        File file = new File(targetPath);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         int options = 100;
 //        System.out.println("原来----------"+baos.size()/1024);
-        File src = new File(imageUri.getPath());
-        Log.i("src=%d",src.length());
-        if (src.length()   > targetSize) {  //判断如果图片是否大于400kb,大于继续压缩
-            options = (int) (targetSize * 100 / (src.length() ));
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        while (baos.toByteArray().length   > targetSize) {  //判断如果图片是否大于400kb,大于继续压缩
+            options -= 4;
             Log.i("options=%d",options);
-            if (options < 10)
-            {
-                options = 10;
+            if(options<=0){
+                break;
             }
+            baos.reset();// 重置baos即清空baos
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);
         }
-        image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+
+
+        File file = new File(targetPath);
         try {
+
             FileOutputStream outputStream = new FileOutputStream(file);
             outputStream.write(baos.toByteArray());
 //            System.out.println("现在----------"+baos.size()/1024);
