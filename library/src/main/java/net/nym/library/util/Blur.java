@@ -13,7 +13,6 @@ package net.nym.library.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 public class Blur {
 
@@ -79,7 +78,7 @@ public class Blur {
 		int h = bitmap.getHeight();
 
 		int[] pix = new int[w * h];
-		Log.e("pix", w + " " + h + " " + pix.length);
+		Log.d("pix :" + w + " " + h + " " + pix.length);
 		bitmap.getPixels(pix, 0, w, 0, 0, w, h);
 
 		int wm = w - 1;
@@ -265,7 +264,7 @@ public class Blur {
 			}
 		}
 
-		Log.e("pix", w + " " + h + " " + pix.length);
+		Log.d("pix :" + w + " " + h + " " + pix.length);
 		bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 		return (bitmap);
 	}
