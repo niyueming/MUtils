@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="parent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">2dp</item>
+    </style>
+
+    <style name="parent_gray" parent="parent">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <style name="parent_red" parent="parent">
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <style name="parent_white" parent="parent">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="parent_black" parent="parent">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="parent_yellow" parent="parent">
+        <item name="android:textColor">@color/yellow</item>
+    </style>
+    <style name="parent_green" parent="parent">
+        <item name="android:textColor">@color/green</item>
+    </style>
+
+    <style name="parent_shadow_style">
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">2</item>
+        <!-- y轴平移 -->
+        <item name="android:shadowColor">#88000000</item>
+        <item name="android:shadowRadius">3.0</item>
+        <!-- 阴影半径 -->
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="gray_12" parent="parent_gray">
+        <item name="android:textSize">@dimen/size12</item>
+    </style>
+
+    <style name="gray_14" parent="parent_gray">
+        <item name="android:textSize">@dimen/size14</item>
+    </style>
+
+    <style name="gray_16" parent="parent_gray">
+        <item name="android:textSize">@dimen/size16</item>
+    </style>
+
+    <style name="gray_18" parent="parent_gray">
+        <item name="android:textSize">@dimen/size18</item>
+    </style>
+
+    <style name="gray_20" parent="parent_gray">
+        <item name="android:textSize">@dimen/size20</item>
+    </style>
+
+    <style name="gray_22" parent="parent_gray">
+        <item name="android:textSize">@dimen/size22</item>
+    </style>
+
+    <style name="gray_24" parent="parent_gray">
+        <item name="android:textSize">@dimen/size24</item>
+    </style>
+
+    <style name="gray_26" parent="parent_gray">
+        <item name="android:textSize">@dimen/size26</item>
+    </style>
+
+    <style name="gray_30" parent="parent_gray">
+        <item name="android:textSize">@dimen/size30</item>
+    </style>
+
+    <style name="gray_32" parent="parent_gray">
+        <item name="android:textSize">@dimen/size32</item>
+    </style>
+
+    <style name="red_12" parent="parent_red">
+        <item name="android:textSize">@dimen/size12</item>
+    </style>
+
+    <style name="red_14" parent="parent_red">
+        <item name="android:textSize">@dimen/size14</item>
+    </style>
+
+    <style name="red_16" parent="parent_red">
+        <item name="android:textSize">@dimen/size16</item>
+    </style>
+
+    <style name="red_18" parent="parent_red">
+        <item name="android:textSize">@dimen/size18</item>
+    </style>
+
+    <style name="red_20" parent="parent_red">
+        <item name="android:textSize">@dimen/size20</item>
+    </style>
+
+    <style name="red_22" parent="parent_red">
+        <item name="android:textSize">@dimen/size22</item>
+    </style>
+
+    <style name="red_24" parent="parent_red">
+        <item name="android:textSize">@dimen/size24</item>
+    </style>
+
+    <style name="red_26" parent="parent_red">
+        <item name="android:textSize">@dimen/size26</item>
+    </style>
+
+    <style name="red_30" parent="parent_red">
+        <item name="android:textSize">@dimen/size30</item>
+    </style>
+
+    <style name="red_32" parent="parent_red">
+        <item name="android:textSize">@dimen/size32</item>
+    </style>
+
+    <style name="black_12" parent="parent_black">
+        <item name="android:textSize">@dimen/size12</item>
+    </style>
+
+    <style name="black_14" parent="parent_black">
+        <item name="android:textSize">@dimen/size14</item>
+    </style>
+
+    <style name="black_16" parent="parent_black">
+        <item name="android:textSize">@dimen/size16</item>
+    </style>
+
+    <style name="black_18" parent="parent_black">
+        <item name="android:textSize">@dimen/size18</item>
+    </style>
+
+    <style name="black_20" parent="parent_black">
+        <item name="android:textSize">@dimen/size20</item>
+    </style>
+
+    <style name="black_22" parent="parent_black">
+        <item name="android:textSize">@dimen/size22</item>
+    </style>
+
+    <style name="black_24" parent="parent_black">
+        <item name="android:textSize">@dimen/size24</item>
+    </style>
+
+    <style name="black_26" parent="parent_black">
+        <item name="android:textSize">@dimen/size26</item>
+    </style>
+
+    <style name="black_30" parent="parent_black">
+        <item name="android:textSize">@dimen/size30</item>
+    </style>
+
+    <style name="black_32" parent="parent_black">
+        <item name="android:textSize">@dimen/size32</item>
+    </style>
+
+    <style name="white_10" parent="parent_white">
+        <item name="android:textSize">@dimen/size10</item>
+    </style>
+    <style name="white_12" parent="parent_white">
+        <item name="android:textSize">@dimen/size12</item>
+    </style>
+
+    <style name="white_14" parent="parent_white">
+        <item name="android:textSize">@dimen/size14</item>
+    </style>
+
+    <style name="white_16" parent="parent_white">
+        <item name="android:textSize">@dimen/size16</item>
+    </style>
+
+    <style name="white_18" parent="parent_white">
+        <item name="android:textSize">@dimen/size18</item>
+    </style>
+
+    <style name="white_20" parent="parent_white">
+        <item name="android:textSize">@dimen/size20</item>
+    </style>
+
+    <style name="white_22" parent="parent_white">
+        <item name="android:textSize">@dimen/size22</item>
+    </style>
+
+    <style name="white_24" parent="parent_white">
+        <item name="android:textSize">@dimen/size24</item>
+    </style>
+
+    <style name="white_30" parent="parent_white">
+        <item name="android:textSize">@dimen/size30</item>
+    </style>
+
+    <style name="white_32" parent="parent_white">
+        <item name="android:textSize">@dimen/size32</item>
+    </style>
+
+    <style name="yellow_12" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size12</item>
+    </style>
+
+    <style name="yellow_14" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size14</item>
+    </style>
+
+    <style name="yellow_16" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size16</item>
+    </style>
+
+    <style name="yellow_18" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size18</item>
+    </style>
+
+    <style name="yellow_20" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size20</item>
+    </style>
+
+    <style name="yellow_22" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size22</item>
+    </style>
+
+    <style name="yellow_24" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size24</item>
+    </style>
+
+    <style name="yellow_26" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size26</item>
+    </style>
+
+    <style name="yellow_30" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size30</item>
+    </style>
+
+    <style name="yellow_32" parent="parent_yellow">
+        <item name="android:textSize">@dimen/size32</item>
+    </style>
+
+    <style name="green_12" parent="parent_green">
+        <item name="android:textSize">@dimen/size12</item>
+    </style>
+
+    <style name="green_14" parent="parent_green">
+        <item name="android:textSize">@dimen/size14</item>
+    </style>
+
+    <style name="green_16" parent="parent_green">
+        <item name="android:textSize">@dimen/size16</item>
+    </style>
+
+    <style name="green_18" parent="parent_green">
+        <item name="android:textSize">@dimen/size18</item>
+    </style>
+
+    <style name="green_20" parent="parent_green">
+        <item name="android:textSize">@dimen/size20</item>
+    </style>
+
+    <style name="green_22" parent="parent_green">
+        <item name="android:textSize">@dimen/size22</item>
+    </style>
+
+    <style name="green_24" parent="parent_green">
+        <item name="android:textSize">@dimen/size24</item>
+    </style>
+
+    <style name="green_26" parent="parent_green">
+        <item name="android:textSize">@dimen/size26</item>
+    </style>
+
+    <style name="green_30" parent="parent_green">
+        <item name="android:textSize">@dimen/size30</item>
+    </style>
+
+    <style name="green_32" parent="parent_green">
+        <item name="android:textSize">@dimen/size32</item>
+    </style>
+
+
+</resources>

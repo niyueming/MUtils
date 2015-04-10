@@ -10,8 +10,14 @@
 
 package net.nym.library.util;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
+import android.net.Uri;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -46,5 +52,68 @@ public class ImageUtils {
             e.printStackTrace();
         }
         return degree;
+    }
+
+    public static Bitmap compressImageSize(String srcPath,int targetW,int targetH) {
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        //开始读入图片，此时把options.inJustDecodeBounds 设回true了
+        newOpts.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(srcPath, newOpts);//此时返回bm为空
+        int w = newOpts.outWidth;
+        int h = newOpts.outHeight;
+        float hh = targetW;//这里设置高度为800f
+        float ww = targetH;//这里设置宽度为480f
+        int be = 1;//be=1表示不缩放
+        if (w > ww || h > hh) {
+            final int heightRatio = Math.round((float) h / hh);
+            final int widthRatio = Math.round((float) w / ww);
+            be = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        if (be <= 0) {
+            be = 1;
+        }
+        newOpts.inSampleSize = be;//设置缩放比例
+        newOpts.inJustDecodeBounds = false;
+        //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
+        Bitmap bitmap = BitmapFactory.decodeFile(srcPath, newOpts);
+        return bitmap;
+    }
+
+
+    public static Uri compressImage(Uri imageUri,String targetPath) {
+        return compressImage(imageUri,targetPath,400 * 1024);
+    }
+
+    /**
+     * @param targetSize 目标大小，单位b
+     * */
+    public static Uri compressImage(Uri imageUri,String targetPath,long targetSize) {
+        Bitmap image = BitmapFactory.decodeFile(imageUri.getPath());
+        int options = 100;
+//        System.out.println("原来----------"+baos.size()/1024);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        while (baos.toByteArray().length   > targetSize) {  //判断如果图片是否大于400kb,大于继续压缩
+            options -= 4;
+            Log.i("options=%d",options);
+            if(options<=0){
+                break;
+            }
+            baos.reset();// 重置baos即清空baos
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);
+        }
+
+
+        File file = new File(targetPath);
+        try {
+
+            FileOutputStream outputStream = new FileOutputStream(file);
+            outputStream.write(baos.toByteArray());
+//            System.out.println("现在----------"+baos.size()/1024);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.i("newlen=%d",file.length());
+        return Uri.fromFile(file);
     }
 }

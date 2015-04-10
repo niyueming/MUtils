@@ -2,21 +2,56 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.nym.mutils" >
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
+        android:name="net.nym.library.common.BaseApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="net.nym.mutils.ui.Main"
+            android:name=".ui.test.MyActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.test.TestParcelableActivity"
+            android:label="@string/title_activity_test_parcelable" >
+        </activity>
+        <activity
+            android:name=".ui.test.TestRoundProgressBarActivity"
+            android:label="@string/title_activity_test_round_progress_bar" >
+        </activity>
+        <activity
+            android:name=".ui.test.TestZoomImageViewActivity"
+            android:label="@string/title_activity_test_zoom_image_view" >
+        </activity>
+        <activity
+            android:name=".ui.test.TestWebViewActivity"
+            android:label="@string/title_activity_test_web_view" >
+        </activity>
+        <activity
+            android:name=".ui.test.TestLockPatternViewActivity"
+            android:label="@string/title_activity_test_lock_pattern" >
+        </activity>
+        <activity
+            android:name=".ui.test.TestGestureSignatureActivity"
+            android:label="@string/title_activity_test_gesture_signature" >
+        </activity>
+        <activity
+            android:name=".ui.test.TestDiagramActivity"
+            android:label="@string/title_activity_test_diagram" >
         </activity>
     </application>
 

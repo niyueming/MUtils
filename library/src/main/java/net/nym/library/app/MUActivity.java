@@ -14,6 +14,8 @@ import android.app.Activity;
 
 import net.nym.library.http.HttpRequest;
 
+import java.util.LinkedHashMap;
+
 /**
  * @author nym
  * @date 2014/10/9 0009.
@@ -60,7 +62,7 @@ public class MUActivity extends Activity{
         super.onDestroy();
     }
 
-    protected <T> void prepareHttpRequest(HttpRequest<T> request)
+    protected void prepareHttpRequest(HttpRequest request)
     {
         mHttpRequest = request;
     }
@@ -68,7 +70,7 @@ public class MUActivity extends Activity{
     /**
      *@param params Class<T>[]
      */
-    protected <T> void executeHttpRequest(Object params)
+    protected void executeHttpRequest(LinkedHashMap<String, Object> params)
     {
         mHttpRequest.execute(params);
     }

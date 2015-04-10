@@ -34,27 +34,39 @@ public class JavaBeanParser {
             Method method;
             while (iterator.hasNext()) {
                 String key = iterator.next();
-                Field field = getDeclaredField(superClazz, key);
-                if (field != null){
-                    if (key.startsWith("is")) {
-                        methodName = String.format("set%s", key.substring(2));
-                    } else {
-                        String name = firstLetterToUpperCase(key);
-                        methodName = String.format("set%s", name);
+                    Field field = getDeclaredField(superClazz, key);
+                    if (field != null) {
+                        if (key.startsWith("is")) {
+                            methodName = String.format("set%s", key.substring(2));
+                        } else {
+                            String name = firstLetterToUpperCase(key);
+                            methodName = String.format("set%s", name);
+                        }
+                        try {
+                            method = getDeclaredMethod(superClazz, methodName, field.getType());
+                            if (method != null) {
+                                method.invoke(instance, jsonObject.opt(key));
+                            }
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();
+                            boolean accessFlag = field.isAccessible();
+                            /**
+                             * 设置是否有权限访问反射类中的私有属性的
+                             * */
+                            field.setAccessible(true);
+                            field.set(instance, jsonObject.opt(key));
+                            field.setAccessible(accessFlag);
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-                    method = getDeclaredMethod(superClazz, methodName, field.getType());
-                    if (method != null) {
-                        method.invoke(instance, jsonObject.opt(key));
-                    }
-                }
 
             }
 
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
         return instance;

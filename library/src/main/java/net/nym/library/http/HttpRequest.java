@@ -11,31 +11,38 @@
 package net.nym.library.http;
 
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import net.nym.library.cookie.PersistentCookieStore;
 import net.nym.library.javabean.JSONTypeUtil;
 import net.nym.library.javabean.JavaBeanParser;
 import net.nym.library.task.AsyncTask;
 import net.nym.library.util.Log;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,10 +51,12 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -55,19 +64,21 @@ import java.util.Map;
  * @date 2014/10/9 0009.
  * @since 1.0
  */
-public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
+public class HttpRequest extends AsyncTask<LinkedHashMap<String, Object>, Integer, String> {
 
-    private RequestListener<T> mRequestListener;
+    /**
+     * 允许请求失败次数
+     * */
+    private int maxRetry = 1;
+    private String mUrl;
+    private RequestListener mRequestListener;
     private ErrorHandler mErrorHandler = new ErrorHandler();
     private Dialog mDialog;
-    private Method mMethod;
-    private HttpClient mClient;
-    private HttpGet mHttpGet;
-    private HttpPost mHttpPost;
+    private Method mMethod = Method.GET;
     private boolean isShowDialog;
     private Context mContext;
 
-    public enum Method{
+    public enum Method {
         GET,
         POST,
         PUT,
@@ -75,17 +86,36 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
         Options,
         Delete
     }
-//    public HttpRequest(Method method,RequestListener listener)
-//    {
-//        mMethod = method;
-//        mRequestListener = listener;
-//    }
 
-    public void setClient(HttpClient mClient) {
-        this.mClient = mClient;
+    public HttpRequest(Context context, String url, Method method, RequestListener listener, int retry,boolean isShowDialog) {
+        setContext(context);
+        setUrl(url);
+        setMethod(method);
+        setRequestListener(listener);
+        setRetry(retry);
+        setShowDialog(isShowDialog);
+    }
+    public HttpRequest(Context context, String url, Method method, RequestListener listener, boolean isShowDialog) {
+        this(context,url,method,listener,1,isShowDialog);
+    }
+
+    public HttpRequest(Context context, String url, Method method, RequestListener listener) {
+        this(context, url, method, listener, true);
+    }
+
+    /**
+     * @param retry 重试次数
+     * */
+    public void setRetry(int retry)
+    {
+        this.maxRetry = retry;
     }
     public void setMethod(Method method) {
         this.mMethod = method;
+    }
+
+    public void setUrl(String url) {
+        mUrl = url;
     }
 
     public void setShowDialog(boolean isShowDialog) {
@@ -96,40 +126,11 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
         this.mContext = context;
     }
 
-    public void setHttpGet(HttpGet mHttpGet) {
-        this.mHttpGet = mHttpGet;
-    }
 
-    public void setHttpPost(HttpPost mHttpPost) {
-        this.mHttpPost = mHttpPost;
-    }
-
-    public void setRequestListener(RequestListener<T> mRequestListener) {
+    public void setRequestListener(RequestListener mRequestListener) {
         this.mRequestListener = mRequestListener;
     }
 
-//    class MResponseHandler<T> implements ResponseHandler<T> {
-
-//
-//        @Override
-//        public T handleResponse(
-//                final HttpResponse response) throws IOException {
-//            StatusLine statusLine = response.getStatusLine();
-//            HttpEntity entity = response.getEntity();
-//            if (statusLine.getStatusCode() >= 300) {
-//                throw new HttpResponseException(
-//                        statusLine.getStatusCode(),
-//                        statusLine.getReasonPhrase());
-//            }
-//            if (entity == null) {
-//                throw new ClientProtocolException("Response contains no content");
-//            }
-//            ContentType contentType = ContentType.getOrDefault(entity);
-//            Charset charset = contentType.getCharset();
-//            String result = EntityUtils.toString(entity,charset.name());
-//            return null;
-//        }
-//    }
 
     /**
      * Runs on the UI thread before {@link #doInBackground}.
@@ -140,8 +141,7 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (isShowDialog)
-        {
+        if (isShowDialog) {
             mDialog = new ProgressDialog(mContext);
             mDialog.show();
         }
@@ -162,139 +162,147 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
      * @see #publishProgress
      */
     @Override
-    protected T doInBackground(Class<T>... params) {
-        if (params == null)
-        {
-            return null;
-        }
-        if (params.length < 1)
-        {
-            return null;
-        }
+    protected String doInBackground(LinkedHashMap<String, Object>... params) {
+        String result = null;
+        if (params == null) {
+        } else if (params.length >= 1 && params[0] != null) {
 
-        T instance = null;
-        try {
-            instance = params[0].newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        if (instance == null)
-        {
-            return null;
-        }
-
-        try {
-            HttpResponse response = null;
-            switch (mMethod)
-            {
-                case GET:
-                    response = mClient.execute(mHttpGet);
-                    break;
-                case POST:
-                    response = mClient.execute(mHttpPost);
-                    break;
-                default:
-                    Log.i("%s", "only temporarily support get and post method now");
-                    break;
-            }
-            if (response == null)
-            {
-                mErrorHandler.sendEmptyMessage(RequestListener.OTHER_ERROR);
-                instance = null;
-            }
-            else
-            {
-                if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
-                {
-                    HttpEntity httpEntity = response.getEntity();
-                    if(httpEntity == null)
-                    {
-                        mErrorHandler.sendEmptyMessage(RequestListener.OTHER_ERROR);
-                        instance = null;
-                    }
-                    else
-                    {
-                        ContentType contentType = ContentType.getOrDefault(httpEntity);
-                        Charset charset = contentType.getCharset();
-                        String result = EntityUtils.toString(httpEntity,charset.name());
-                        if (String.class.isInstance(instance))
+            try {
+                switch (mMethod) {
+                    case GET:
+                        result = getRequest(mUrl, params[0]);
+                        break;
+                    case POST:
+                        if (params.length >= 2)
                         {
-                            instance = (T)result;
-                        }
-                        else if (JSONObject.class.isInstance(instance))
-                        {
-                            if (JSONTypeUtil.getJSONType(result) == JSONTypeUtil.JSON_TYPE.JSON_TYPE_OBJECT) {
-                                instance = (T)new JSONObject(result);
-                            }
-                            else {
-                                mErrorHandler.sendEmptyMessage(RequestListener.JSON_ERROR);
-                                instance = null;
-                            }
-                        }
-                        else if (JSONArray.class.isInstance(instance))
-                        {
-                            if (JSONTypeUtil.getJSONType(result) == JSONTypeUtil.JSON_TYPE.JSON_TYPE_ARRAY) {
-                                instance = (T)new JSONArray(result);
-                            }
-                            else {
-                                mErrorHandler.sendEmptyMessage(RequestListener.JSON_ERROR);
-                                instance = null;
-                            }
+                            result = postRequest(mUrl, params[0],params[1]);
                         }
                         else
                         {
-                            switch (JSONTypeUtil.getJSONType(result))
-                            {
-                                case JSON_TYPE_OBJECT:
-                                    instance = JavaBeanParser.parserJSONObject(params[0],new JSONObject(result));
-                                    break;
-                                case JSON_TYPE_ARRAY:
-                                    ArrayList<T> list = JavaBeanParser.parserJSONArray(params[0],new JSONArray(result));
-                                    Message message = mErrorHandler.obtainMessage();
-                                    message.what = RequestListener.RESULT_LIST;
-                                    message.obj = list;
-                                    mErrorHandler.sendMessage(message);
-                                    instance = null;
-                                    break;
-                                case JSON_TYPE_ERROR:
-                                    mErrorHandler.sendEmptyMessage(RequestListener.JSON_ERROR);
-                                    instance = null;
-                                    break;
-
-                            }
+                            result = postRequest(mUrl, params[0],null);
                         }
+                        break;
+                    case PUT:
 
-                    }
+                        break;
+                    case TRACE:
+
+                        break;
+                    case Options:
+
+                        break;
+                    case Delete:
+
+                        break;
                 }
-                else
-                {
-                    Log.i("reasonPhrase=%s",response.getStatusLine().getReasonPhrase() + "");
-                    mErrorHandler.sendEmptyMessage(RequestListener.OTHER_ERROR);
-                    instance = null;
-                }
+
+            } catch (SocketTimeoutException e) {
+                e.printStackTrace();
+                mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
+            } catch (ConnectTimeoutException e) {
+                e.printStackTrace();
+                mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
+            } catch (IOException e) {
+                e.printStackTrace();
+                mErrorHandler.sendEmptyMessage(RequestListener.IO_ERROR);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            mErrorHandler.sendEmptyMessage(RequestListener.JSON_ERROR);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            mErrorHandler.sendEmptyMessage(RequestListener.OTHER_ERROR);
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-            mErrorHandler.sendEmptyMessage(RequestListener.OTHER_ERROR);
-        } catch (ConnectTimeoutException e) {
-            e.printStackTrace();
-            mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
-        } catch (SocketTimeoutException e) {
-            e.printStackTrace();
-            mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
-        }catch (IOException e) {
-            e.printStackTrace();
-            mErrorHandler.sendEmptyMessage(RequestListener.IO_ERROR);
         }
-        return instance;
+
+        Log.i("result=%s", result + "");
+        android.util.Log.i("result", String.format("result=%s", result + ""));
+        return result;
+    }
+
+    private String getRequest(String urlString, LinkedHashMap<String, Object> params) throws IOException {
+        StringBuffer param = new StringBuffer();
+        int i = 0;
+        for (String key : params.keySet()) {
+            if (i == 0)
+                param.append("?");
+            else
+                param.append("&");
+            param.append(key).append("=").append(params.get(key));
+            i++;
+        }
+
+        Log.i(urlString + param.toString());
+        //将URL与参数拼接
+        HttpGet getMethod = new HttpGet(urlString + param.toString());
+
+        DefaultHttpClient client = new DefaultHttpClient();
+
+        //支持cookie
+        client.setCookieStore(new PersistentCookieStore(mContext));
+
+        //允许重复
+        client.setHttpRequestRetryHandler(new HttpRequestRetryHandler() {
+            @Override
+            public boolean retryRequest(IOException e, int i, HttpContext httpContext) {
+                Log.i("retry=%d",i);
+                if (i < maxRetry)
+                {
+                    return  true;
+                }
+                return false;
+            }
+        });
+
+        HttpResponse response = client.execute(getMethod);
+        if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
+            String result = EntityUtils.toString(response.getEntity(), "utf-8");
+            return result;
+        }
+        return null;
+    }
+
+    private String postRequest(String urlString, LinkedHashMap<String, Object> params, LinkedHashMap<String, Object> files) throws IOException {
+
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        for (String key : params.keySet()) {
+            builder.addTextBody(key,params.get(key) + "");
+            Log.i("%s:%s", key, params.get(key) + "");
+        }
+
+        if (files != null)
+        {
+            for (String key : files.keySet()) {
+                File file = new File(files.get(key) + "");
+                if (!file.exists())
+                {
+                    continue;
+                }
+                builder.addBinaryBody(key,file );
+                Log.i("%s:%s", key, file.toString() + "");
+            }
+        }
+
+
+        //将URL与参数拼接
+        HttpPost getMethod = new HttpPost(urlString);
+        getMethod.setEntity(builder.build());
+
+        DefaultHttpClient client = new DefaultHttpClient();
+        client.setCookieStore(new PersistentCookieStore(mContext));
+        client.setHttpRequestRetryHandler(new HttpRequestRetryHandler() {
+            @Override
+            public boolean retryRequest(IOException e, int i, HttpContext httpContext) {
+                Log.i("retry=%d", i);
+                if (i < maxRetry) {
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        HttpResponse response = client.execute(getMethod);
+        if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
+            String result = EntityUtils.toString(response.getEntity(), "utf-8");
+            return result;
+        }
+        return null;
     }
 
     /**
@@ -307,12 +315,11 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
      */
     @Override
     protected void onProgressUpdate(Integer... values) {
-        if (values == null)
-        {
+        if (values == null) {
             return;
         }
         if (mRequestListener != null & values.length >= 2) {
-            mRequestListener.onProgressUpdate(values[0],values[1]);
+            mRequestListener.onProgressUpdate(values[0], values[1]);
         }
     }
 
@@ -328,16 +335,13 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
      * @see #onCancelled(Object)
      */
     @Override
-    protected void onPostExecute(T t) {
-        if (isShowDialog & mDialog!= null )
-        {
-            if (mDialog.isShowing())
-            {
+    protected void onPostExecute(String t) {
+        if (isShowDialog & mDialog != null) {
+            if (mDialog.isShowing()) {
                 mDialog.dismiss();
             }
         }
-        if (t == null)
-        {
+        if (t == null) {
             return;
         }
         if (mRequestListener != null) {
@@ -347,169 +351,25 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
 
     @Override
     public boolean cancel() {
-        if (isShowDialog & mDialog!= null )
-        {
-            if (mDialog.isShowing())
-            {
+        if (isShowDialog & mDialog != null) {
+            if (mDialog.isShowing()) {
                 mDialog.dismiss();
             }
         }
         return super.cancel();
     }
 
-    public static void clear()
-    {
+    public static void clear() {
         sPoolWorkQueue.clear();
     }
 
-    public static class Builder<T>{
-        private RequestListener<T> mRequestListener;
-        private Context mContext;
-        private Method mMethod = Method.GET;
-        private ArrayList<NameValuePair> mParams = new ArrayList<NameValuePair>();
-        private HashMap<String,File> mFiles = new HashMap<String, File>();
-        private String mUrl;
-        private boolean isShowDialog;
-
-        public Builder(Context context,String url)
-        {
-            mContext = context;
-            mUrl = url;
-        }
-
-        public Builder<T> setUrl(String url)
-        {
-            this.mUrl = url;
-            return this;
-        }
-
-        public Builder<T> setShowDialog(boolean isShowDialog)
-        {
-            this.isShowDialog = isShowDialog;
-            return this;
-        }
-
-        public Builder<T> setRequestListener(RequestListener<T> requestListener)
-        {
-            this.mRequestListener = requestListener;
-            return this;
-        }
-
-        public Builder<T> setMethod( Method method)
-        {
-            this.mMethod = method;
-            return this;
-        }
-
-        public Builder<T> addParameter(String name,String value)
-        {
-            NameValuePair pair = new BasicNameValuePair(name,value);
-            mParams.add(pair);
-            return this;
-        }
-
-        public Builder<T> addFile(String name,File file)
-        {
-            if (mMethod == Method.POST)
-            {
-                mFiles.put(name,file);
-            }
-            else
-            {
-                throw new RuntimeException("it is not httppost");
-            }
-
-            return this;
-        }
-
-
-        public HttpRequest<T> build()
-        {
-            HttpRequest<T> request = new HttpRequest<T>();
-            if (mMethod == null)
-            {
-                mMethod = Method.GET;
-            }
-            request.setMethod(mMethod);
-            switch (mMethod)
-            {
-                case GET:
-                    final StringBuffer sb = new StringBuffer();
-                    for (NameValuePair pair : mParams)
-                    {
-                        sb.append(pair.getName()).append('=').append(pair.getValue()).append('&');
-                        Log.println("%s:%s", pair.getName() + "",pair.getValue() + "");
-                    }
-                    if (sb.length() > 0)
-                    {
-                        sb.deleteCharAt(sb.length() - 1);
-                    }
-                    if (mUrl.contains("?"))
-                    {
-                        mUrl += "&" + sb.toString();
-                    }
-                    else
-                    {
-                        mUrl += "?" + sb.toString();
-                    }
-                    final HttpGet get = new HttpGet(mUrl);
-                    request.setHttpGet(get);
-                    break;
-                case POST:
-                    HttpPost post = new HttpPost(mUrl);
-                    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-                    for (NameValuePair pair : mParams)
-                    {
-                        builder.addTextBody(pair.getName(),pair.getValue());
-                        Log.println("%s:%s", pair.getName() + "",pair.getValue() + "");
-                    }
-                    if (mFiles.size() > 0) {
-                        for (Map.Entry<String, File> entry : mFiles.entrySet()) {
-                            File file = (File) entry.getValue();
-                            Log.println("%s:%s", entry.getKey(), file.getAbsolutePath()
-                                    + "");
-                            if (file.exists()) {
-                                builder.addBinaryBody(entry.getKey(), file, ContentType.create(MimeTypeUtils.getMimeType(file.getName())), file.getName());
-                            } else {
-                                Log.println("%s is not exists", file.getAbsolutePath()
-                                        + "");
-                                continue;
-                            }
-                        }
-                    }
-                    post.setEntity(builder.build());
-                    request.setHttpPost(post);
-                    break;
-                default:
-                    Log.i("%s", "only temporarily support get and post method now");
-                    break;
-            }
-            Log.println("url=%s", mUrl);
-
-            if (mRequestListener == null)
-            {
-                mRequestListener = new DefaultRequestListener<T>(mContext);
-            }
-            request.setRequestListener(mRequestListener);
-            request.setContext(mContext);
-            request.setShowDialog(isShowDialog);
-
-            HttpClient client = new DefaultHttpClient();
-            request.setClient(client);
-
-            return request;
-        }
-
-    }
 
     private class ErrorHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
-            if (isShowDialog & mDialog!= null )
-            {
-                if (mDialog.isShowing())
-                {
+            if (isShowDialog & mDialog != null) {
+                if (mDialog.isShowing()) {
                     mDialog.dismiss();
                 }
             }
@@ -542,11 +402,6 @@ public class HttpRequest<T> extends AsyncTask<Class<T>, Integer, T> {
                     if (mRequestListener != null) {
                         mRequestListener.onError(msg.what,
                                 RequestListener.ERROR_OTHER);
-                    }
-                    break;
-                case RequestListener.RESULT_LIST:
-                    if (mRequestListener != null){
-                        mRequestListener.onResponse((ArrayList<T>)msg.obj);
                     }
                     break;
             }

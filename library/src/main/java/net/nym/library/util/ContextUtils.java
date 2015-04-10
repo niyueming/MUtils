@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -22,6 +24,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -182,6 +187,28 @@ public class ContextUtils {
     }
 
     /**
+     *
+     * 广播相册扫描文件
+     *
+     * */
+    public static void mediaScanFile(Activity activity,Uri uri)
+    {
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,uri);
+        activity.sendBroadcast(intent);
+    }
+
+    public static void insertMedia(Activity activity,File file)
+    {
+        try {
+            //插入图库
+            MediaStore.Images.Media.insertImage(activity.getContentResolver(), file.getAbsolutePath(), file.getName(), null);
+            mediaScanFile(activity,Uri.fromFile(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Hides the input method.
      *
      * @param context context
@@ -329,6 +356,12 @@ public class ContextUtils {
         // 在通知栏中显示
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);
+        //如果存放地址已存在该文件，删除
+        File file = new File(Environment.getExternalStoragePublicDirectory(dir_name),file_name);
+        if (file.exists())
+        {
+            file.delete();
+        }
         // sdcard的目录下的download文件夹
         request.setDestinationInExternalPublicDir(dir_name,file_name);
         request.setTitle(title_name);
@@ -336,6 +369,9 @@ public class ContextUtils {
     }
 
 
+    /**
+     * 剪切板
+     * */
     public static void clipboardManagerCopy(Context context,String message)
     {
         if (isHoneycombOrLater())
@@ -364,5 +400,23 @@ public class ContextUtils {
     {
         android.content.ClipboardManager c = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         c.setPrimaryClip(ClipData.newPlainText(null, message));
+    }
+
+
+    /**
+     * 获取全部图片地址
+     * @return
+     */
+    public static ArrayList<String> getAllImages(Context context){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Uri uri = intent.getData();
+        ArrayList<String> list = new ArrayList<String>();
+        String[] proj ={MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);//managedQuery(uri, proj, null, null, null);
+        while(cursor.moveToNext()){
+            String path =cursor.getString(0);
+            list.add(new File(path).getAbsolutePath());
+        }
+        return list;
     }
 }

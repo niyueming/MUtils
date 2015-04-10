@@ -8,7 +8,7 @@ MUtils
 - Common
  - Windows 7
 - Android
- - [Android Studio 0.8.9](http://developer.android.com/sdk/installing/studio.html)
+ - [Android Studio 1.1.0](http://developer.android.com/sdk/installing/studio.html)
 
 ### License
 ```

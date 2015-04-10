@@ -89,29 +89,6 @@ public class Utils {
         return new DecimalFormat(pattern);
     }
 
-    /**
-     *
-     * @param time long型时间，毫秒
-     * @param format 如："yyyy-MM-dd HH:mm:ss"
-     * @return 返回format格式的时间
-     *
-     * 时间戳转换成字符窜
-     * */
-    public static String getDateToString(String format,long time) {
-        Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat(format);
-        return sf.format(d);
-    }
-
-    /**
-     * 返回默认格式"yyyy-MM-dd HH:mm:ss"的时间
-     * @param time long型时间，毫秒
-     *
-     *
-     * */
-    public static String getDateToString(long time) {
-        return getDateToString("yyyy-MM-dd HH:mm:ss",time);
-    }
 
     /**
      * Check if external storage is built-in or removable.
@@ -150,6 +127,49 @@ public class Utils {
 
         }
         return ProvidersName;
+    }
+
+    /**
+     * byte数组转换成16进制字符串
+     *
+     * @param b
+     * @return
+     */
+    public static String bytes2HexString(byte[] b) {
+        String ret = "";
+        for (int i = 0; i < b.length; i++) {
+            String hex = Integer.toHexString(b[i] & 0xFF);
+            if (hex.length() == 1) {
+                hex = '0' + hex;
+            }
+            ret += hex.toUpperCase();
+        }
+        return ret;
+    }
+
+    /**
+     * 16进制字符串转成byte数组
+     *
+     * @param src
+     * @return
+     */
+    public static byte[] hexString2Bytes(String src) {
+        byte[] ret = new byte[src.length()/2];
+        byte[] tmp = src.getBytes();
+        for (int i = 0; i < src.length()/2; i++) {
+            ret[i] = uniteBytes(tmp[i * 2], tmp[i * 2 + 1]);
+        }
+        return ret;
+    }
+
+    public static byte uniteBytes(byte src0, byte src1) {
+        byte _b0 = Byte.decode("0x" + new String(new byte[] { src0 }))
+                .byteValue();
+        _b0 = (byte) (_b0 << 4);
+        byte _b1 = Byte.decode("0x" + new String(new byte[] { src1 }))
+                .byteValue();
+        byte ret = (byte) (_b0 ^ _b1);
+        return ret;
     }
 
 //    /**

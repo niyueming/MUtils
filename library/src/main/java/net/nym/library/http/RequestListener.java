@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * @date 2014/10/9 0009.
  * @since 1.0
  */
-public interface RequestListener<T> {
+public interface RequestListener {
 
     public static final String ERROR_WITHOUT_NETWORK = "无网络";
     public static final String ERROR_JSON_PARSE = "返回错误（不是json）";
@@ -29,12 +29,9 @@ public interface RequestListener<T> {
     public static final int TIMEOUT_ERROR = 2;
     public static final int WITHOUT_NETWORK_ERROR = 3;
     public static final int JSON_ERROR = 4;
-    public static final int RESULT_LIST = 5;
 
 
-	void onResponse(T object);
-
-    void onResponse(ArrayList<T> object);
+	void onResponse(String object);
 
     /**
      * @param errorCode 错误码
