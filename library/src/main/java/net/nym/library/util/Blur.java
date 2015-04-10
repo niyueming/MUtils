@@ -13,6 +13,13 @@ package net.nym.library.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
+import android.view.View;
 
 public class Blur {
 
@@ -268,5 +275,30 @@ public class Blur {
 		bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 		return (bitmap);
 	}
+
+    public static void blur(Context context,Bitmap bkg, View view) {
+        float scaleFactor = 4;//缩放图片，缩放之后模糊效果更好
+        float radius = 2;
+
+        Bitmap overlay = Bitmap.createBitmap((int) (view.getMeasuredWidth()/scaleFactor),
+                (int) (view.getMeasuredHeight()/scaleFactor), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(overlay);
+        canvas.translate(-view.getLeft()/scaleFactor, -view.getTop()/scaleFactor);
+        canvas.scale(1 / scaleFactor, 1 / scaleFactor);
+        Paint paint = new Paint();
+        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
+        float visibleWidth = view.getWidth();//可见宽
+        int visibleHeight = view.getHeight();//可见高
+        //从view的截图中截取的区域，+10和下面-10的原因是，高斯模糊的边有时会有黑影，所以增大模糊区域
+        Rect src = new Rect(0,0, (int)(visibleWidth), visibleHeight);
+        RectF dest = new RectF(0, 0, visibleWidth , visibleHeight);//设置Drawer背景的区域
+        canvas.drawBitmap(bkg, src, dest, paint);
+        overlay = Blur.fastblur(context,overlay, (int) radius,true);//进行高斯模糊操作
+        if (Build.VERSION.SDK_INT < 16) {//16level以前使用这个方法，在16中被废弃
+            view.setBackgroundDrawable(new BitmapDrawable(context.getResources(), overlay));
+        } else {
+            view.setBackground(new BitmapDrawable(context.getResources(), overlay));
+        }
+    }
 
 }
