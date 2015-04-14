@@ -3,6 +3,10 @@ package net.nym.library.util;
 import android.annotation.TargetApi;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.widget.EditText;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -170,6 +174,42 @@ public class Utils {
                 .byteValue();
         byte ret = (byte) (_b0 ^ _b1);
         return ret;
+    }
+
+    /**
+     * android:inputType="numberDecimal"
+     * @param dot 小数点后保留位数
+     * */
+    public static void setDecimalCount(final EditText editText,final int dot)
+    {
+//        editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);  //输入类型为非负实数,设置无效
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String temp = s.toString();
+                int posDot = temp.indexOf(".");
+                if (posDot < 0){
+                    return;
+                }
+                if (posDot == 0){
+                    s.insert(0,"0.");
+                    return;
+                }
+                if (temp.length() - posDot - 1 > dot)
+                {
+                    s.delete(posDot + (dot + 1), s.length());
+                }
+            }
+        });
     }
 
 //    /**

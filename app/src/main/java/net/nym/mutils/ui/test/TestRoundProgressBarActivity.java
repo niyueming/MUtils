@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import net.nym.library.util.Utils;
 import net.nym.library.widget.RoundProgressBar;
 import net.nym.mutils.R;
 
@@ -32,6 +33,7 @@ public class TestRoundProgressBarActivity extends ActionBarActivity implements V
         mRoundProgressBar = (RoundProgressBar) findViewById(R.id.roundProgressBar);
         mRoundProgressBar.setProgress(50);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Utils.setDecimalCount((EditText) findViewById(R.id.number),3);
     }
 
     @Override
