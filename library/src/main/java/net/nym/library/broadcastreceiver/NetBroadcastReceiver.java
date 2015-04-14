@@ -74,27 +74,37 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
 			}
             networkType = mobileInfo.getSubtype();
             switch (mobileInfo.getSubtype()) {
-			case TelephonyManager.NETWORK_TYPE_UMTS:
-			case TelephonyManager.NETWORK_TYPE_HSDPA:
-				mobileNetName = "联通3G";
-				break;
-			case TelephonyManager.NETWORK_TYPE_GPRS:
-			case TelephonyManager.NETWORK_TYPE_EDGE:
-				mobileNetName = "移动或联通2G";
-				break;
-			case TelephonyManager.NETWORK_TYPE_CDMA:
-				mobileNetName = "电信2G";
-				break;
-			case TelephonyManager.NETWORK_TYPE_EVDO_0:
-			case TelephonyManager.NETWORK_TYPE_EVDO_A:
-			case TelephonyManager.NETWORK_TYPE_EVDO_B:
-				mobileNetName = "电信3G";
-				break;
-			case TelephonyManager.NETWORK_TYPE_UNKNOWN:
-				mobileNetName = "UNKNOWN";
-				break;
-			default:
-				break;
+                case TelephonyManager.NETWORK_TYPE_UMTS:
+                case TelephonyManager.NETWORK_TYPE_HSDPA:
+                case TelephonyManager.NETWORK_TYPE_HSUPA:
+                case TelephonyManager.NETWORK_TYPE_HSPA:
+                    mobileNetName = "联通3G";
+                    break;
+                case TelephonyManager.NETWORK_TYPE_EHRPD:
+                    mobileNetName = "电信3G";
+                    break;
+                case TelephonyManager.NETWORK_TYPE_GPRS:
+                case TelephonyManager.NETWORK_TYPE_EDGE:
+                case TelephonyManager.NETWORK_TYPE_1xRTT:
+                case TelephonyManager.NETWORK_TYPE_IDEN:
+                    mobileNetName = "移动或联通2G";
+                    break;
+                case TelephonyManager.NETWORK_TYPE_CDMA:
+                    mobileNetName = "电信2G";
+                    break;
+                case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                    mobileNetName = "电信3G";
+                    break;
+                case TelephonyManager.NETWORK_TYPE_LTE:
+                    mobileNetName = "LTE";
+                    break;
+                case TelephonyManager.NETWORK_TYPE_UNKNOWN:
+                    mobileNetName = "UNKNOWN";
+                    break;
+                default:
+                    break;
 			}
 
 //            switch (networkType) {
