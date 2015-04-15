@@ -44,6 +44,10 @@ public class Entities<T extends Entity> implements Iterable<T>{
         list.add(object);
     }
 
+    public void add(int index,T object) {
+        list.add(index,object);
+    }
+
     public void addAll(Entities<T> object) {
         list.addAll(object.getList());
     }
