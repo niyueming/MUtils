@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.ClipData;
+import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
@@ -418,5 +419,55 @@ public class ContextUtils {
             list.add(new File(path).getAbsolutePath());
         }
         return list;
+    }
+
+    /**
+     * 创建桌面快捷键
+     * 需要权限<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+     * @param name 桌面快捷方式显示名称
+     * @param icon 桌面快捷方式显示图片
+     * @param clazz 桌面快捷方式打开页面
+     * @param isDuplicate 是否允许重复创建
+     * @return
+     */
+    public static void addShortcut(Context context,String name , int icon,Class clazz,boolean isDuplicate) {
+        Intent shortcut = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+
+        //快捷方式的名称
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
+        shortcut.putExtra("duplicate", isDuplicate); //是否允许重复创建
+
+        /****************************此方法已失效*************************/
+        //ComponentName comp = new ComponentName(this.getPackageName(), "."+this.getLocalClassName());
+        //shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(Intent.ACTION_MAIN).setComponent(comp));  　　
+        /******************************end*******************************/
+        Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
+        shortcutIntent.setClassName(context, clazz.getName());
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+
+        //快捷方式的图标
+        Intent.ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(context, icon);
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconRes);
+
+        context.sendBroadcast(shortcut);
+    }
+
+    /**
+     * 删除桌面快捷键
+     * 需要权限<uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+     * @param name 桌面快捷方式显示名称
+     * @param clazz 桌面快捷方式打开页面
+     * @return
+     */
+    public static void deleteShortcut(Context context,String name ,Class clazz) {
+        Intent shortcut = new Intent("com.android.launcher.action.UNINSTALL_SHORTCUT");
+
+        //快捷方式的名称
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
+        String appClass = clazz.getName();
+        ComponentName comp = new ComponentName(context.getPackageName(), appClass);
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(Intent.ACTION_MAIN).setComponent(comp));
+
+       context.sendBroadcast(shortcut);
     }
 }
