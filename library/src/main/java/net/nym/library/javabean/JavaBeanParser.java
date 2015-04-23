@@ -44,7 +44,7 @@ public class JavaBeanParser {
                         }
                         try {
                             method = getDeclaredMethod(superClazz, methodName, field.getType());
-                            if (method != null) {
+                            if (method != null & !jsonObject.isNull(key)) {
                                 method.invoke(instance, jsonObject.opt(key));
                             }
                         } catch (IllegalArgumentException e) {
