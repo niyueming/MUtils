@@ -16,6 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import net.nym.library.image_displayer.DisplayImageOptionsFactory;
 import net.nym.library.util.Utils;
 import net.nym.library.widget.RoundProgressBar;
 import net.nym.mutils.R;
@@ -34,6 +37,11 @@ public class TestRoundProgressBarActivity extends ActionBarActivity implements V
         mRoundProgressBar.setProgress(50);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Utils.setDecimalCount((EditText) findViewById(R.id.number),3);
+
+        ImageLoader.getInstance().displayImage("drawable://" + R.drawable.ic_launcher
+                , (android.widget.ImageView) findViewById(R.id.image)
+                , DisplayImageOptionsFactory.getInstance().createCircleOptions(100,10)
+        );
     }
 
     @Override
