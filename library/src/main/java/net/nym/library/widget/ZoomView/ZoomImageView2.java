@@ -36,7 +36,7 @@ public class ZoomImageView2 extends ImageView {
     start_Left = -1;// 初始化默认位置.
 
     /**   最大缩放级别*/
-    float mMaxScale=2f;
+    float mMaxScale=3f;
     /**   最小缩放级别*/
     float mMinScale=0.5f;
     /**   双击时的缩放级别*/
