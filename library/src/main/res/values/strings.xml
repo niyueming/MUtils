@@ -13,6 +13,7 @@
     <string name="title_activity_test_parcelable">TestParcelableActivity</string>
     <string name="title_activity_test_round_progress_bar">TestRoundProgressBarActivity</string>
     <string name="title_activity_test_zoom_image_view">TestZoomImageViewActivity</string>
+    <string name="title_activity_test_zoom_image_view2">TestZoomImageView2Activity</string>
     <string name="title_activity_test_web_view">TestWebViewActivity</string>
     <string name="title_activity_test_lock_pattern">TestLockPatternViewActivity</string>
     <string name="title_activity_test_gesture_signature">TestGestureSignatureActivity</string>

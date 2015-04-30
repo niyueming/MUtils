@@ -173,6 +173,10 @@ public class MyActivity extends ActionBarActivity
                     map.put("class",TestZoomImageViewActivity.class);
                     data.add(map);
                     map = new HashMap<String, Object>();
+                    map.put("name","ZoomImageView2");
+                    map.put("class",TestZoomImageView2Activity.class);
+                    data.add(map);
+                    map = new HashMap<String, Object>();
                     map.put("name","webView");
                     map.put("class",TestWebViewActivity.class);
                     data.add(map);

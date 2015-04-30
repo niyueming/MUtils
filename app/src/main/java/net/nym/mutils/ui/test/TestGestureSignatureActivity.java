@@ -18,6 +18,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import net.nym.library.util.StringUtils;
 import net.nym.mutils.R;
 
 import java.io.File;
@@ -127,7 +129,7 @@ public class TestGestureSignatureActivity extends ActionBarActivity implements V
     }
 
     private void saveBitmap() {
-        Bitmap bitmap = toBitmap(mGestureOverlayView.getWidth(), mGestureOverlayView.getHeight(), 10, Color.BLACK);
+        Bitmap bitmap = toBitmap(mGestureOverlayView.getWidth(), mGestureOverlayView.getHeight(), 10, Color.BLACK,true);
         File f = new File(Environment.getExternalStorageDirectory(),"qianzi.png");
         FileOutputStream fos = null;
         try {
@@ -147,8 +149,9 @@ public class TestGestureSignatureActivity extends ActionBarActivity implements V
 
     /**
      *从 Gesture 复制出来的 toBitmap方法，增加背景白色
+     * @param isMarked 是否加时间水印
     * */
-    private Bitmap toBitmap(int width, int height, int inset, int color) {
+    private Bitmap toBitmap(int width, int height, int inset, int color,boolean isMarked) {
         final Bitmap bitmap = Bitmap.createBitmap(width, height,
                 Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(bitmap);
@@ -179,6 +182,29 @@ public class TestGestureSignatureActivity extends ActionBarActivity implements V
         canvas.scale(scale, scale);
 
         canvas.drawPath(path, paint);
+
+        if(isMarked) {
+            /**加水印*/
+            String text = StringUtils.getDateToString("yyyy-MM-dd HH:mm:ss", System.currentTimeMillis());
+            Paint markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            // text color - #3D3D3D
+            markPaint.setColor(Color.argb(255, 255, 0, 0));
+            // text size in pixels
+            markPaint.setTextSize((int) (14 * scale * 5));
+            // text shadow
+            markPaint.setShadowLayer(1f, 0f, 1f, Color.BLACK);
+
+            Rect markBounds = new Rect();
+            paint.getTextBounds(text, 0, text.length(), markBounds);
+            // draw text to the Canvas center
+            int x = (width - markBounds.width()) / 2;
+            int y = (height + markBounds.height()) / 2;
+            //draw  text  to the bottom
+//        int x = (width - markBounds.width())/10*9 ;
+//        int y = (height + markBounds.height())/10*9;
+            canvas.drawText(text, x, y, markPaint);
+            /**加水印*/
+        }
         return bitmap;
     }
 }
