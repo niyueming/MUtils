@@ -49,7 +49,7 @@ dependencies {
     //apache的httpmime项目,依赖httpclient
     compile 'org.apache.httpcomponents:httpmime:4.3.5'
     //apache的httpasyncclient项目
-//        compile 'org.apache.httpcomponents:httpasyncclient:4.0.2'
+        compile 'org.apache.httpcomponents:httpasyncclient:4.1'
 //        compile 'com.google.code.gson:gson:2.2.4'
 }
 

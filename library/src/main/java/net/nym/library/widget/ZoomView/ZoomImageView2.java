@@ -2,17 +2,15 @@ package net.nym.library.widget.ZoomView;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.Scroller;
 
 import net.nym.library.util.Log;
 
@@ -51,6 +49,8 @@ public class ZoomImageView2 extends ImageView {
 
     private OnChildMovingListener mOnChildMovingListener;
 
+    private Scroller mScroller;
+
     public ZoomImageView2(Context context)
     {
         super(context);
@@ -69,6 +69,9 @@ public class ZoomImageView2 extends ImageView {
 
     public void initZoomImageView2() {
         mGestureDetector=new GestureDetector(getContext(), new GestureListener());
+
+        mScroller = new Scroller(getContext());
+
         //背景设置为balck
 //        setBackgroundColor(Color.BLACK);
         //将缩放类型设置为FIT_CENTER，表示把图片按比例扩大/缩小到View的宽度，居中显示
@@ -185,16 +188,16 @@ public class ZoomImageView2 extends ImageView {
             int current_Top = this.getTop() + (int)dy;
             int current_Right = this.getRight() + (int)dx;
             int current_Bottom = this.getBottom() + (int)dy;
+                setFrame(current_Left, current_Top, current_Right, current_Bottom);
             if (current_Left > start_Left | current_Right < start_Right)
             {
-//                setFrame(current_Left, current_Top, current_Right, current_Bottom);
                 if ( Math.sqrt(dx*dx+dy*dy)>30f ){
                     stopMove();
                 }
             }
-            else {
-                setFrame(current_Left, current_Top, current_Right, current_Bottom);
-            }
+//            else {
+//                setFrame(current_Left, current_Top, current_Right, current_Bottom);
+//            }
 
 
 
@@ -315,7 +318,8 @@ public class ZoomImageView2 extends ImageView {
             {
                 xDelta = start_Right - getRight();
             }
-            else if (getTop() > start_Top)
+
+            if (getTop() > start_Top)
             {
                 yDelta = start_Top -getTop();
             }
@@ -324,10 +328,35 @@ public class ZoomImageView2 extends ImageView {
                 yDelta = start_Bottom - getBottom();
             }
 
+            Log.e("x=%d,y=%d", xDelta, yDelta);
 //            new MyTranslateAnimationAsyncTask(xDelta,yDelta,300).execute();
+            //设置mScroller的滚动偏移量
+            mScroller.startScroll(getLeft(), getTop(), xDelta, yDelta,300);
+            invalidate();//这里必须调用invalidate()才能保证computeScroll()会被调用，否则不一定会刷新界面，看不到滚动效果
         }
     }
 
+    @Override
+    public void computeScroll() {
+
+        //先判断mScroller滚动是否完成
+        if (mScroller.computeScrollOffset()) {
+
+            //这里调用View的scrollTo()完成实际的滚动
+//            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            Log.e("CurrX=%d,CurrY=%d", mScroller.getCurrX(), mScroller.getCurrY());
+            int current_Left = mScroller.getCurrX();
+            int current_Top = mScroller.getCurrY();
+            int current_Right = mScroller.getCurrX() + getWidth();
+            int current_Bottom = mScroller.getCurrY() + getHeight();
+
+            setFrame(current_Left, current_Top, current_Right,
+                    current_Bottom);
+            //必须调用该方法，否则不一定能看到滚动效果
+            postInvalidate();
+        }
+        super.computeScroll();
+    }
 
     /**
      *  计算两个手指间的距离
