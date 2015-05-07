@@ -64,14 +64,6 @@ public class HttpRequestJsonArray extends AsyncTask<Object, Integer, String> {
     private LinkedHashMap<String, Object> mParams;
     private LinkedHashMap<String, Object> mFiles;
 
-    public enum Method {
-        GET,
-        POST,
-        PUT,
-        TRACE,
-        Options,
-        Delete
-    }
 
     public HttpRequestJsonArray(Context context, String url, Method method, RequestListener<JSONArray> listener
             ,LinkedHashMap<String, Object> mParams,LinkedHashMap<String, Object> mFiles, int retry,boolean isShowDialog) {

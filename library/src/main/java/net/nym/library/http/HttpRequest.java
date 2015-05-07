@@ -61,15 +61,6 @@ public class HttpRequest extends AsyncTask<Object, Integer, String> {
     private LinkedHashMap<String, Object> mParams;
     private LinkedHashMap<String, Object> mFiles;
 
-    public enum Method {
-        GET,
-        POST,
-        PUT,
-        TRACE,
-        Options,
-        Delete
-    }
-
     public HttpRequest(Context context, String url, Method method, RequestListener<String> listener
             ,LinkedHashMap<String, Object> mParams,LinkedHashMap<String, Object> mFiles, int retry,boolean isShowDialog) {
         setContext(context);
