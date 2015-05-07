@@ -70,7 +70,8 @@ public class Notify {
         .setSmallIcon(smallIconId);
 
     Notification notification = notificationCompat.build();
-    notification.defaults |= Notification.DEFAULT_SOUND;
+//    notification.defaults |= Notification.DEFAULT_ALL;
+    notification.defaults = Notification.DEFAULT_ALL;
     //display the notification
     mNotificationManager.notify(MessageID, notification);
     return MessageID++;

@@ -36,6 +36,7 @@ import java.lang.reflect.Modifier;
  */
 public class BaseSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = BaseSQLiteOpenHelper.class.getSimpleName();
+    private static final int VERSION = 1;
     private static BaseSQLiteOpenHelper my = null;
     public final static String NAME = "ddp.db";
 
@@ -48,7 +49,7 @@ public class BaseSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public BaseSQLiteOpenHelper(Context context){
-        this(context, NAME, null, 1);
+        this(context, NAME, null, VERSION);
     }
     /**
      * Create a helper object to create, open, and/or manage a database.

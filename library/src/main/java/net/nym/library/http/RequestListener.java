@@ -10,14 +10,12 @@
 
 package net.nym.library.http;
 
-import java.util.ArrayList;
-
 /**
  * @author nym
  * @date 2014/10/9 0009.
  * @since 1.0
  */
-public interface RequestListener {
+public interface RequestListener<T> {
 
     public static final String ERROR_WITHOUT_NETWORK = "无网络";
     public static final String ERROR_JSON_PARSE = "返回错误（不是json）";
@@ -31,7 +29,7 @@ public interface RequestListener {
     public static final int JSON_ERROR = 4;
 
 
-	void onResponse(String object);
+    void onResponse(T object);
 
     /**
      * @param errorCode 错误码

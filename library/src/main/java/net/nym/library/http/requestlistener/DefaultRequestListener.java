@@ -8,26 +8,20 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package net.nym.library.http;
+package net.nym.library.http.requestlistener;
 
-import android.content.Context;
 
-import net.nym.library.util.Log;
+import net.nym.library.common.BaseApplication;
+import net.nym.library.http.RequestListener;
 import net.nym.library.util.Toaster;
-
-import java.util.ArrayList;
 
 /**
  * @author nym
  * @date 2014/10/9 0009.
  * @since 1.0
  */
-public class DefaultRequestListener implements RequestListener {
-    Context mContext;
+abstract class DefaultRequestListener<T> implements RequestListener<T> {
 
-    public DefaultRequestListener(Context context) {
-        mContext = context;
-    }
 
     /**
      * @param errorCode 错误码
@@ -35,13 +29,11 @@ public class DefaultRequestListener implements RequestListener {
      */
     @Override
     public void onError(int errorCode, String message) {
-        Toaster.toaster(mContext, message == null ? "" : message);
+        Toaster.toaster(BaseApplication.getAppContext(), message == null ? "" : message);
     }
 
     @Override
-    public void onResponse(String object) {
-        Log.i("onResponse=%s",object+ "");
-    }
+    public abstract void onResponse(T object) ;
 
 
     @Override

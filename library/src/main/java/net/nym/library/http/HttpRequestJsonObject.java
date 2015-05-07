@@ -18,7 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 
 
-import net.nym.library.cookie.PersistentCookieStore;
+import net.nym.library.javabean.JSONTypeUtil;
 import net.nym.library.task.AsyncTask;
 import net.nym.library.util.Log;
 
@@ -31,6 +31,8 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,14 +46,14 @@ import java.util.LinkedHashMap;
  * @date 2014/10/9 0009.
  * @since 1.0
  */
-public class HttpRequest extends AsyncTask<Object, Integer, String> {
+public class HttpRequestJsonObject extends AsyncTask<Object, Integer, String> {
 
     /**
      * 允许请求失败次数
      * */
     private static int maxRetry = 1;
     private String mUrl;
-    private RequestListener<String> mRequestListener;
+    private RequestListener<JSONObject> mRequestListener;
     private ErrorHandler mErrorHandler = new ErrorHandler();
     private Dialog mDialog;
     private Method mMethod = Method.GET;
@@ -70,7 +72,7 @@ public class HttpRequest extends AsyncTask<Object, Integer, String> {
         Delete
     }
 
-    public HttpRequest(Context context, String url, Method method, RequestListener<String> listener
+    public HttpRequestJsonObject(Context context, String url, Method method, RequestListener<JSONObject> listener
             ,LinkedHashMap<String, Object> mParams,LinkedHashMap<String, Object> mFiles, int retry,boolean isShowDialog) {
         setContext(context);
         setUrl(url);
@@ -81,22 +83,22 @@ public class HttpRequest extends AsyncTask<Object, Integer, String> {
         setParams(mParams);
         setFiles(mFiles);
     }
-    public HttpRequest(Context context, String url, Method method, RequestListener<String> listener
+    public HttpRequestJsonObject(Context context, String url, Method method, RequestListener<JSONObject> listener
             , LinkedHashMap<String, Object> mParams,LinkedHashMap<String, Object> mFiles,boolean isShowDialog) {
         this(context, url, method, listener,mParams,mFiles, maxRetry, isShowDialog);
     }
 
-    public HttpRequest(Context context, String url, Method method, RequestListener<String> listener
+    public HttpRequestJsonObject(Context context, String url, Method method, RequestListener<JSONObject> listener
             ,LinkedHashMap<String, Object> mParams,LinkedHashMap<String, Object> mFiles) {
         this(context, url, method, listener,mParams,mFiles, true);
     }
 
-    public HttpRequest(Context context, String url, Method method, RequestListener<String> listener
+    public HttpRequestJsonObject(Context context, String url, Method method, RequestListener<JSONObject> listener
             ,LinkedHashMap<String, Object> mParams) {
         this(context, url, method, listener,mParams,null, true);
     }
 
-    public HttpRequest(Context context, String url, Method method, RequestListener<String> listener
+    public HttpRequestJsonObject(Context context, String url, Method method, RequestListener<JSONObject> listener
             ,LinkedHashMap<String, Object> mParams,boolean isShowDialog) {
         this(context, url, method, listener,mParams,null, isShowDialog);
     }
@@ -180,41 +182,41 @@ public class HttpRequest extends AsyncTask<Object, Integer, String> {
     protected String doInBackground(Object... params) {
         String result = null;
 
-            try {
-                switch (mMethod) {
-                    case GET:
-                        result = getRequest(mUrl, mParams);
-                        break;
-                    case POST:
-                        result = postRequest(mUrl, mParams,mFiles);
-                        break;
-                    case PUT:
+        try {
+            switch (mMethod) {
+                case GET:
+                    result = getRequest(mUrl, mParams);
+                    break;
+                case POST:
+                    result = postRequest(mUrl, mParams,mFiles);
+                    break;
+                case PUT:
 
-                        break;
-                    case TRACE:
+                    break;
+                case TRACE:
 
-                        break;
-                    case Options:
+                    break;
+                case Options:
 
-                        break;
-                    case Delete:
+                    break;
+                case Delete:
 
-                        break;
-                }
-
-            } catch (SocketTimeoutException e) {
-                e.printStackTrace();
-                mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
-            } catch (ConnectTimeoutException e) {
-                e.printStackTrace();
-                mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
-            } catch (IOException e) {
-                e.printStackTrace();
-                mErrorHandler.sendEmptyMessage(RequestListener.IO_ERROR);
+                    break;
             }
+
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+            mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
+        } catch (ConnectTimeoutException e) {
+            e.printStackTrace();
+            mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            mErrorHandler.sendEmptyMessage(RequestListener.TIMEOUT_ERROR);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mErrorHandler.sendEmptyMessage(RequestListener.IO_ERROR);
+        }
 
         Log.i("result=%s", result + "");
         android.util.Log.i("result", String.format("result=%s", result + ""));
@@ -244,7 +246,7 @@ public class HttpRequest extends AsyncTask<Object, Integer, String> {
         DefaultHttpClient client = new DefaultHttpClient();
 
         //支持cookie
-        client.setCookieStore(new PersistentCookieStore(mContext));
+//        client.setCookieStore(new PersistentCookieStore(mContext));
 
         //允许重复
         client.setHttpRequestRetryHandler(new HttpRequestRetryHandler() {
@@ -303,7 +305,7 @@ public class HttpRequest extends AsyncTask<Object, Integer, String> {
         getMethod.setEntity(builder.build());
 
         DefaultHttpClient client = new DefaultHttpClient();
-        client.setCookieStore(new PersistentCookieStore(mContext));
+//        client.setCookieStore(new PersistentCookieStore(mContext));
         client.setHttpRequestRetryHandler(new HttpRequestRetryHandler() {
             @Override
             public boolean retryRequest(IOException e, int i, HttpContext httpContext) {
@@ -370,7 +372,12 @@ public class HttpRequest extends AsyncTask<Object, Integer, String> {
             return;
         }
         if (mRequestListener != null) {
-            mRequestListener.onResponse(t);
+            if (JSONTypeUtil.getJSONType(t) == JSONTypeUtil.JSON_TYPE.JSON_TYPE_OBJECT)
+                try {
+                    mRequestListener.onResponse(new JSONObject(t));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
         }
     }
 

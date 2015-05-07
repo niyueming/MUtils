@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -120,6 +121,26 @@ public class ContextUtils {
             Log.e("getVersionInt", e);
         }
         return version;
+    }
+
+    public static String getVersionName(Context ctx) {
+        String version = "";
+        try {
+            version = ctx.getPackageManager().getPackageInfo(ctx.getApplicationInfo().packageName, 0).versionName;
+        } catch (Exception e) {
+            Log.e("getVersionInt", e);
+        }
+        return version;
+    }
+
+    /**
+     * 获取设备ID
+     *
+     * @param context
+     * @return
+     */
+    public static String getAndroidID(Context context) {
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     /**

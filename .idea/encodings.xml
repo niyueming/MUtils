@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/library/src/main/java/net/nym/library/http/HttpRequest.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/library/src/main/java/net/nym/library/http/HttpRequestJsonArray.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/library/src/main/java/net/nym/library/http/HttpRequestJsonObject.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/library/src/main/java/net/nym/library/http/RequestListener.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/library/src/main/java/net/nym/library/http/requestlistener/DefaultRequestListener.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/library/src/main/java/net/nym/library/http/requestlistener/JSONArrayRequestListener.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/library/src/main/java/net/nym/library/http/requestlistener/JSONObjectRequestListener.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/library/src/main/java/net/nym/library/http/requestlistener/StringRequestListener.java" charset="UTF-8" />
+  </component>
+</project>
