@@ -10,7 +10,10 @@
 
 package net.nym.library.entity;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -24,7 +27,7 @@ import java.util.NoSuchElementException;
  * @time 下午6:16:15
  * @see Entity
  */
-public class Entities<T extends Entity> implements Iterable<T>{
+public class Entities<T extends Entity> implements Collection<T> {
     ArrayList<T> list;
 
     public Entities() {
@@ -40,16 +43,34 @@ public class Entities<T extends Entity> implements Iterable<T>{
         list.clear();
     }
 
-    public void add(T object) {
-        list.add(object);
+    @Override
+    public boolean contains(Object object) {
+        return list.contains(object);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> collection) {
+        return list.contains(collection);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return list.size() == 0;
+    }
+
+    @Override
+    public boolean add(T object) {
+        return list.add(object);
     }
 
     public void add(int index,T object) {
         list.add(index,object);
     }
 
-    public void addAll(Entities<T> object) {
-        list.addAll(object.getList());
+    @Override
+    public boolean addAll(Collection<? extends T> object) {
+
+        return list.addAll(object);
     }
 
     public T get(int index) {
@@ -58,6 +79,18 @@ public class Entities<T extends Entity> implements Iterable<T>{
 
     public int size() {
         return list.size();
+    }
+
+    @NonNull
+    @Override
+    public Object[] toArray() {
+        return list.toArray();
+    }
+
+    @NonNull
+    @Override
+    public <T1> T1[] toArray(T1[] array) {
+        return list.toArray(array);
     }
 
     public boolean removeEntity(T object) {
@@ -71,8 +104,24 @@ public class Entities<T extends Entity> implements Iterable<T>{
     public T remove(int position) {
         return list.remove(position);
     }
-    public boolean remove(T object) {
+
+//    public boolean remove(T object) {
+//        return list.remove(object);
+//    }
+
+    @Override
+    public boolean remove(Object object) {
         return list.remove(object);
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> collection) {
+        return list.removeAll(collection);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> collection) {
+        return list.retainAll(collection);
     }
 
     @Override
