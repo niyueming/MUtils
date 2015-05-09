@@ -176,10 +176,10 @@ public class HttpRequestJsonObject extends AsyncTask<Object, Integer, String> {
         try {
             switch (mMethod) {
                 case GET:
-                    result = getRequest(mUrl, mParams);
+                    result = Request.get(mUrl, mParams, maxRetry);
                     break;
                 case POST:
-                    result = postRequest(mUrl, mParams,mFiles);
+                    result = Request.post(mUrl, mParams, mFiles, maxRetry);
                     break;
                 case PUT:
 
@@ -214,107 +214,6 @@ public class HttpRequestJsonObject extends AsyncTask<Object, Integer, String> {
         return result;
     }
 
-    private String getRequest(String urlString, LinkedHashMap<String, Object> params) throws IOException {
-        StringBuffer param = new StringBuffer();
-        if (param != null){
-
-            int i = 0;
-            for (String key : params.keySet()) {
-                if (i == 0)
-                    param.append("?");
-                else
-                    param.append("&");
-                param.append(key).append("=").append(params.get(key));
-                i++;
-            }
-
-        }
-
-        Log.i(urlString + param.toString());
-        //将URL与参数拼接
-        HttpGet getMethod = new HttpGet(urlString + param.toString());
-
-        DefaultHttpClient client = new DefaultHttpClient();
-
-        //支持cookie
-//        client.setCookieStore(new PersistentCookieStore(mContext));
-
-        //允许重复
-        client.setHttpRequestRetryHandler(new HttpRequestRetryHandler() {
-            @Override
-            public boolean retryRequest(IOException e, int i, HttpContext httpContext) {
-                Log.i("retry=%d",i);
-                if (i < maxRetry)
-                {
-                    return  true;
-                }
-                return false;
-            }
-        });
-
-        HttpResponse response = client.execute(getMethod);
-        if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
-            String result = EntityUtils.toString(response.getEntity(), "utf-8");
-            return result;
-        }
-        return null;
-    }
-
-    private String postRequest(String urlString, LinkedHashMap<String, Object> params, LinkedHashMap<String, Object> files) throws IOException {
-
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        if (params != null){
-            for (String key : params.keySet()) {
-                builder.addTextBody(key,params.get(key) + "");
-                Log.i("%s:%s", key, params.get(key) + "");
-            }
-        }
-
-        if (files != null)
-        {
-            for (String key : files.keySet()) {
-                File file = null;
-                if (File.class.isInstance(files.get(key)))
-                {
-                    file = (File) files.get(key);
-                }
-                else {
-                    file = new File(files.get(key) + "");
-                }
-                if (!file.exists())
-                {
-                    continue;
-                }
-                builder.addBinaryBody(key,file );
-                Log.i("%s:%s", key, file.toString() + "");
-            }
-        }
-
-
-        //将URL与参数拼接
-        HttpPost getMethod = new HttpPost(urlString);
-        getMethod.setEntity(builder.build());
-
-        DefaultHttpClient client = new DefaultHttpClient();
-//        client.setCookieStore(new PersistentCookieStore(mContext));
-        client.setHttpRequestRetryHandler(new HttpRequestRetryHandler() {
-            @Override
-            public boolean retryRequest(IOException e, int i, HttpContext httpContext) {
-                Log.i("retry=%d", i);
-                if (i < maxRetry) {
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        HttpResponse response = client.execute(getMethod);
-        if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
-            String result = EntityUtils.toString(response.getEntity(), "utf-8");
-            return result;
-        }
-        return null;
-    }
 
     /**
      * Runs on the UI thread after {@link #publishProgress} is invoked.
