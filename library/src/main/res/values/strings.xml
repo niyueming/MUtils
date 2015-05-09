@@ -18,6 +18,7 @@
     <string name="title_activity_test_lock_pattern">TestLockPatternViewActivity</string>
     <string name="title_activity_test_gesture_signature">TestGestureSignatureActivity</string>
     <string name="title_activity_test_diagram">TestDiagramActivity</string>
+    <string name="title_activity_test_hint_view_pager">TestHintViewPagerActivity</string>
 
     <!--LockPattern-->
     <!-- Accessibility description sent when user starts drawing a lock pattern. -->
