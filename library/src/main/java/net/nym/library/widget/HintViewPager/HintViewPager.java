@@ -77,7 +77,15 @@ public class HintViewPager extends FrameLayout {
 
     }
 
-    public void cancelAuto()
+    public void stop()
+    {
+        if (isAuto){
+            cancelAuto();
+            isAuto = false;
+        }
+    }
+
+    private void cancelAuto()
     {
         if(mTimer != null)
         {
