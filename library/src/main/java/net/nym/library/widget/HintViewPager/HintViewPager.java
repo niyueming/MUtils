@@ -140,9 +140,13 @@ public class HintViewPager extends FrameLayout {
         if (mPagerAdapter != null){
             mHintPointLayer.removeAllViews();
             int count = mPagerAdapter.getRealCount();
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT
+                    , LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = 2;
+            params.rightMargin = 2;
             for (int i = 0; i < count ;i ++){
                 ImageView image = new ImageView(getContext());
-                image.setPadding(2, 2, 2, 2);
+                image.setLayoutParams(params);
 
                 if(mViewPager.getCurrentItem()%count == i)
                 {
