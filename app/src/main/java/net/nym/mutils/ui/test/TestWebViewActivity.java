@@ -40,7 +40,8 @@ public class TestWebViewActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.activity_test_web_view);
-        url = "http://wsq.qq.com/reflow/255443386";
+//        url = "http://wsq.qq.com/reflow/255443386";
+        url = "http://www.52kids.com.cn/school/share/feedback";
         mWebView = (WebView) findViewById(R.id.webView);
         initWebView();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
