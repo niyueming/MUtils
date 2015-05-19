@@ -84,7 +84,15 @@
             android:layout_width="200px"
             android:layout_height="200px"
             android:background="#f00"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
+            />
+        <ImageView
+            android:id="@+id/image2"
+            android:layout_width="300px"
+            android:layout_height="200px"
+            android:layout_marginTop="5dp"
+            android:background="#f00"
+            android:scaleType="fitCenter"
             />
 
     </LinearLayout>

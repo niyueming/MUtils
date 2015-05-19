@@ -42,6 +42,10 @@ public class TestRoundProgressBarActivity extends ActionBarActivity implements V
                 , (android.widget.ImageView) findViewById(R.id.image)
                 , DisplayImageOptionsFactory.getInstance().createCircleOptions(100,10)
         );
+        ImageLoader.getInstance().displayImage("drawable://" + R.drawable.ic_launcher
+                , (android.widget.ImageView) findViewById(R.id.image2)
+                , DisplayImageOptionsFactory.getInstance().createOvalOptions(300,200,10)
+        );
     }
 
     @Override

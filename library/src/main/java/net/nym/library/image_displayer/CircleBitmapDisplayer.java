@@ -23,6 +23,8 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.utils.L;
 
+import net.nym.library.util.Log;
+
 /**
  * 需要加dependencies，
  * dependencies { compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3' }
@@ -223,8 +225,8 @@ public class CircleBitmapDisplayer implements BitmapDisplayer {
 
         @Override
         public void draw(Canvas canvas) {
-            canvas.drawCircle(mRect.width()/2 + margin, mRect.height()/2 + margin, cornerRadius, backgroundPaint);
-            canvas.drawCircle(mRect.width()/2 + margin, mRect.height()/2 + margin, cornerRadius - margin, paint);
+            canvas.drawCircle(mRect.centerX(), mRect.centerY(), cornerRadius, backgroundPaint);
+            canvas.drawCircle(mRect.centerX(), mRect.centerY(), cornerRadius - margin, paint);
         }
 
         @Override

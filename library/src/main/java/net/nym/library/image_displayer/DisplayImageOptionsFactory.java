@@ -96,6 +96,28 @@ public class DisplayImageOptionsFactory {
         return options;
     }
 
+    public DisplayImageOptions createOvalOptions(int width,int height)
+    {
+        // This configuration tuning is custom. You can tune every option, you
+        // may tune some of them,
+        // or you can create default configuration by
+        // ImageLoaderConfiguration.createDefault(this);
+        // method.
+        DisplayImageOptions options = createOptions(new OvalBitmapDisplayer(width,height));
+        return options;
+    }
+
+    public DisplayImageOptions createOvalOptions(int width,int height,int margin)
+    {
+        // This configuration tuning is custom. You can tune every option, you
+        // may tune some of them,
+        // or you can create default configuration by
+        // ImageLoaderConfiguration.createDefault(this);
+        // method.
+        DisplayImageOptions options = createOptions(new OvalBitmapDisplayer(width,height,margin));
+        return options;
+    }
+
     private DisplayImageOptions createOptions( BitmapDisplayer displayer)
     {
         // This configuration tuning is custom. You can tune every option, you

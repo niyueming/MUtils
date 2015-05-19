@@ -26,7 +26,7 @@ import java.util.MissingFormatArgumentException;
 public class Log {
 	public static final String TAG = "MUtils";
 	public static final String DEBUG_TAG = "debug.net.nym.library";
-    private static boolean isDebug = BuildConfig.DEBUG;
+    private static boolean isDebug = true;//BuildConfig.DEBUG;
 
     public static  void setDebug(boolean debug)
     {
