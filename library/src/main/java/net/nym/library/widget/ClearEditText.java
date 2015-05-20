@@ -28,10 +28,6 @@ public class ClearEditText extends EditText implements
      * 删除按钮的引用
      */
     private Drawable mClearDrawable;
-    /**
-     * 控件是否有焦点
-     */
-    private boolean hasFoucs;
 
     public ClearEditText(Context context) {
         this(context, null);
@@ -52,7 +48,6 @@ public class ClearEditText extends EditText implements
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
-
 
     private void init() {
         //获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
@@ -99,7 +94,6 @@ public class ClearEditText extends EditText implements
      */
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        this.hasFoucs = hasFocus;
         if (hasFocus) {
             setClearIconVisible(getText().length() > 0);
         } else {
@@ -125,7 +119,7 @@ public class ClearEditText extends EditText implements
     @Override
     public void onTextChanged(CharSequence s, int start, int count,
                               int after) {
-        if(hasFoucs){
+        if(isFocused()){
             setClearIconVisible(s.length() > 0);
         }
     }
