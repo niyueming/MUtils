@@ -250,7 +250,7 @@ public class HttpRequestJsonObject extends AsyncTask<Object, Integer, String> {
 
             if (isBaseActivity)
             {
-//                ((BaseActivity)mContext).dismissDialog(BaseActivity.DIALOG_LOADING);
+//                ((BaseActivity)mContext).removeDialog(BaseActivity.DIALOG_LOADING);
             }
             else if (mDialog != null){
                 if (mDialog.isShowing()) {
@@ -276,7 +276,7 @@ public class HttpRequestJsonObject extends AsyncTask<Object, Integer, String> {
         if (isShowDialog & mContext != null) {
             if (isBaseActivity)
             {
-//                ((BaseActivity)mContext).dismissDialog(BaseActivity.DIALOG_LOADING);
+//                ((BaseActivity)mContext).removeDialog(BaseActivity.DIALOG_LOADING);
             }
             else if (mDialog != null){
                 if (mDialog.isShowing()) {
@@ -299,7 +299,7 @@ public class HttpRequestJsonObject extends AsyncTask<Object, Integer, String> {
             if (isShowDialog & mContext != null) {
                 if (isBaseActivity)
                 {
-//                    ((BaseActivity)mContext).dismissDialog(BaseActivity.DIALOG_LOADING);
+//                    ((BaseActivity)mContext).removeDialog(BaseActivity.DIALOG_LOADING);
                 }
                 else if (mDialog != null){
                     if (mDialog.isShowing()) {
