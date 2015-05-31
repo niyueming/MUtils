@@ -18,6 +18,8 @@ import net.nym.library.R;
 
 
 /**
+ *
+ * android:textCursorDrawable='@null'  光标颜色为字体颜色
  * @author nym
  * @date 2015/5/19 0019.
  * @since 1.0

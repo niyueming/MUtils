@@ -3,15 +3,13 @@ package net.nym.library.widget.HintViewPager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
 
 import net.nym.library.R;
 
@@ -30,7 +28,7 @@ public class HintViewPager extends FrameLayout {
     private LinearLayout mHintLayer;
     private LinearLayout mHintPointLayer;
     private ViewPager.OnPageChangeListener mListener;
-    private int[] pointsRes = {R.drawable.point_unselected,R.drawable.point_selected};
+    private int[] pointsRes = {R.drawable.point_unselected, R.drawable.point_selected};
 
     public static final int CHANGE_BANNER = 1;
     public static final int SPACE_TIME = 3000;
@@ -49,7 +47,6 @@ public class HintViewPager extends FrameLayout {
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
             switch (msg.what) {
                 case CHANGE_BANNER:
                     if(mPagerAdapter != null)
@@ -111,12 +108,12 @@ public class HintViewPager extends FrameLayout {
     private void initView()
     {
         mViewPager = new ViewPager(getContext());
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mViewPager.setLayoutParams(params);
         addView(mViewPager);
 
         mHintLayer = new LinearLayout(getContext());
-        params = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+        params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.BOTTOM;
         mHintLayer.setLayoutParams(params);
         mHintLayer.setPadding(5, 5, 5, 5);
@@ -124,7 +121,7 @@ public class HintViewPager extends FrameLayout {
         addView(mHintLayer);
 
         mHintPointLayer = new LinearLayout(getContext());
-        params = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+        params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.BOTTOM;
         mHintPointLayer.setLayoutParams(params);
         mHintPointLayer.setOrientation(LinearLayout.HORIZONTAL);
@@ -199,6 +196,11 @@ public class HintViewPager extends FrameLayout {
         mHintPointLayer.setBackgroundColor(color);
     }
 
+    public void setHintPointVisibility(int visibility)
+    {
+        mHintPointLayer.setVisibility(visibility);
+    }
+
     public void setHintPointBackgroundResource(int res)
     {
         mHintPointLayer.setBackgroundResource(res);
@@ -239,6 +241,11 @@ public class HintViewPager extends FrameLayout {
 
     public void setCurrentItem(int item, boolean smoothScroll){
         mViewPager.setCurrentItem(item,smoothScroll);
+    }
+
+    public int getCurrentItem()
+    {
+        return mViewPager.getCurrentItem();
     }
 
     public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener)
