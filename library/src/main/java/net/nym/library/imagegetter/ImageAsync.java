@@ -34,7 +34,7 @@ public class ImageAsync extends AsyncTask<String, Integer, Drawable> {
 
         InputStream in = null;
         try {
-            // »ñÈ¡ÍøÂçÍ¼Æ¬
+            // è·å–ç½‘ç»œå›¾ç‰‡
             HttpGet http = new HttpGet(url);
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = (HttpResponse) client.execute(http);
@@ -83,7 +83,7 @@ public class ImageAsync extends AsyncTask<String, Integer, Drawable> {
         super.onPostExecute(result);
         if (result != null) {
             drawable.setDrawable(result);
-//            tv_my_web.setText(tv_my_web.getText()); // Í¨¹ıÕâÀïµÄÖØĞÂÉèÖÃ TextView µÄÎÄ×ÖÀ´¸üĞÂUI
+//            tv_my_web.setText(tv_my_web.getText()); // é€šè¿‡è¿™é‡Œçš„é‡æ–°è®¾ç½® TextView çš„æ–‡å­—æ¥æ›´æ–°UI
         }
     }
 

@@ -10,6 +10,8 @@
 
 package net.nym.library.webservice;
 
+import java.net.URL;
+
 /**
  * @author nym
  * @date 2014/10/29 0029.
@@ -18,4 +20,5 @@ package net.nym.library.webservice;
 public class MethodNames {
 
 
+    public final static String HOST_ADDRESS = "http://www.baidu.com";
 }

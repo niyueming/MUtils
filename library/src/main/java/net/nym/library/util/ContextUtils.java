@@ -94,6 +94,16 @@ public class ContextUtils {
     }
 
     /**
+     * api21,5.0及以上
+     *
+     * @return
+     */
+    public static boolean isLollipopOrLater() {
+        return Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    /**
      * 判断设备是否能打电话
      * @param context
      * @return true is phone

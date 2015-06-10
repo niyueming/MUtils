@@ -10,6 +10,7 @@
 
 package net.nym.mutils.ui.test;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,14 +19,26 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.Window;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import net.nym.library.cookie.PersistentCookieStore;
+import net.nym.library.util.ContextUtils;
+import net.nym.library.util.StringUtils;
+import net.nym.library.webservice.MethodNames;
 import net.nym.library.webview.JSCall;
 import net.nym.library.webview.MWebChromeClient;
 import net.nym.library.webview.MWebViewClient;
 import net.nym.mutils.R;
+
+import org.apache.http.cookie.Cookie;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
 
 //	调用js方法：mWebView.loadUrl("javascript:myfunction()");
@@ -96,6 +109,47 @@ public class TestWebViewActivity extends ActionBarActivity {
     private void loadUrl() {
         mWebView.clearHistory();
         mWebView.loadUrl(url);
+    }
+
+    /**
+     * 同步一下cookie
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    protected void synCookies(Context context, String url) {
+        // 转换成URI
+        URL uri = null;
+        try {
+            uri = new URL(url);
+        } catch (MalformedURLException e) {
+            try {
+                // 默认用官网地址
+                uri = new URL(MethodNames.HOST_ADDRESS);
+            } catch (MalformedURLException e1) {
+                return;
+            }
+        }
+
+        CookieManager cookieManager = CookieManager.getInstance();
+        // cookieManager.removeAllCookie();
+        cookieManager.setAcceptCookie(true);
+        PersistentCookieStore cookieStore = new PersistentCookieStore(this);
+        if (null != cookieStore) {
+            List<Cookie> cookies = cookieStore.getCookies();
+            for (Cookie c : cookies) {
+                if (!StringUtils.isNullOrEmpty(c.getName()) && !StringUtils.isNullOrEmpty(c.getValue())) {
+                    // cookies是在HttpClient中获得的cookie
+                    StringBuilder cookie = new StringBuilder(c.getName() + "=" + c.getValue());
+                    cookieManager.setCookie(uri.getHost(), cookie.toString());//
+                }
+            }
+        }
+        if(!ContextUtils.isLollipopOrLater()){
+
+            CookieSyncManager.getInstance().sync();
+        }else {
+            cookieManager.flush();
+        }
+
     }
 
     @Override
