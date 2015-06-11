@@ -11,7 +11,9 @@
 package net.nym.library.webview;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
@@ -56,6 +58,18 @@ public class MWebViewClient extends WebViewClient{
             Log.d(DebugConfig.TAG_BEDUG, "url:" + url);
         }
         //在当前webView打开url
+        if (url.lastIndexOf(".") > 0){
+            if (url.substring(url.lastIndexOf(".") + 1).equals("apk")){
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                view.getContext().startActivity(intent);
+            }else {
+                view.loadUrl(url);
+            }
+        }
+        else {
+            view.loadUrl(url);
+        }
         view.loadUrl(url);
         return super.shouldOverrideUrlLoading(view, url);
     }

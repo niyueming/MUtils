@@ -21,7 +21,7 @@ import java.io.File;
 public class MImageGetter implements Html.ImageGetter {
     @Override
     public Drawable getDrawable(String source) {
-        // ²»´æÔÚÎÄ¼şÊ±·µ»ØÄ¬ÈÏÍ¼Æ¬£¬²¢Òì²½¼ÓÔØÍøÂçÍ¼Æ¬
+        // ä¸å­˜åœ¨æ–‡ä»¶æ—¶è¿”å›é»˜è®¤å›¾ç‰‡ï¼Œå¹¶å¼‚æ­¥åŠ è½½ç½‘ç»œå›¾ç‰‡
         Resources res = BaseApplication.getAppResources();
         URLDrawable defaultDrawable = new URLDrawable(
                 res.getDrawable(R.drawable.ic_launcher));
@@ -31,22 +31,22 @@ public class MImageGetter implements Html.ImageGetter {
         }
         String imageName = Crypto.md5(source);
         String sdcardPath = Environment.getExternalStorageDirectory()
-                .toString(); // »ñÈ¡SDCARDµÄÂ·¾¶
+                .toString(); // è·å–SDCARDçš„è·¯å¾„
 //                                            String sdcardPath = getCacheDir()
-//                                                    .toString(); // »ñÈ¡SDCARDµÄÂ·¾¶
+//                                                    .toString(); // è·å–SDCARDçš„è·¯å¾„
 //                                            Log.e(sdcardPath);
 
-        // »ñÈ¡Í¼Æ¬ºó×ºÃû
+        // è·å–å›¾ç‰‡åç¼€å
         String[] ss = source.split("\\.");
         String ext = ss[ss.length - 1];
 
-        // ×îÖÕÍ¼Æ¬±£³ÖµÄµØÖ·
+        // æœ€ç»ˆå›¾ç‰‡ä¿æŒçš„åœ°å€
         String savePath = sdcardPath + "/" + BaseApplication.getAppContext().getPackageName() + "/"
                 + imageName + "." + ext;
 
         File file = new File(savePath);
         if (file.exists()) {
-            // Èç¹ûÎÄ¼şÒÑ¾­´æÔÚ£¬Ö±½Ó·µ»Ø
+            // å¦‚æœæ–‡ä»¶å·²ç»å­˜åœ¨ï¼Œç›´æ¥è¿”å›
             Drawable drawable = Drawable.createFromPath(savePath);
             if (drawable == null){
                 return defaultDrawable;
