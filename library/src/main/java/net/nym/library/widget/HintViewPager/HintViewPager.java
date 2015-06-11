@@ -33,6 +33,7 @@ public class HintViewPager extends FrameLayout {
     public static final int CHANGE_BANNER = 1;
     public static final int SPACE_TIME = 3000;
     private boolean isAuto;
+    private int pointSpace = 2;
 
     private Timer mTimer ;
     private class MTimerTask extends TimerTask {
@@ -139,8 +140,8 @@ public class HintViewPager extends FrameLayout {
             int count = mPagerAdapter.getRealCount();
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT
                     , LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.leftMargin = 2;
-            params.rightMargin = 2;
+            params.leftMargin = pointSpace;
+            params.rightMargin = pointSpace;
             for (int i = 0; i < count ;i ++){
                 ImageView image = new ImageView(getContext());
                 image.setLayoutParams(params);
@@ -190,6 +191,12 @@ public class HintViewPager extends FrameLayout {
     {
         mHintLayer.setPadding(left,top,right,bottom);
     }
+
+    public void setPointSpace(int space){
+        pointSpace = space;
+        initPoints();
+    }
+
 
     public void setHintPointBackgroundColor(int color)
     {
