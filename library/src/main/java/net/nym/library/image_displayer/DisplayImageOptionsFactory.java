@@ -135,7 +135,32 @@ public class DisplayImageOptionsFactory {
                 .delayBeforeLoading(0).cacheInMemory(true) // default
                 .cacheOnDisk(true) // default
                 .considerExifParams(false) // default
-                .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
+                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED) // default
+                .bitmapConfig(Bitmap.Config.ARGB_8888) // default
+                .displayer(displayer) // default
+                .handler(new Handler()) // default
+                .build();
+        return options;
+    }
+
+    private DisplayImageOptions createOptions( BitmapDisplayer displayer,int loadingImage)
+    {
+        // This configuration tuning is custom. You can tune every option, you
+        // may tune some of them,
+        // or you can create default configuration by
+        // ImageLoaderConfiguration.createDefault(this);
+        // method.
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(loadingImage) // resource or
+                // drawable
+//				.showImageForEmptyUri(R.drawable.ic_launcher) // resource or
+                // drawable
+//				.showImageOnFail(R.drawable.ic_launcher) // resource or drawable
+                .resetViewBeforeLoading(true) // default
+                .delayBeforeLoading(0).cacheInMemory(true) // default
+                .cacheOnDisk(true) // default
+                .considerExifParams(false) // default
+                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED) // default
                 .bitmapConfig(Bitmap.Config.ARGB_8888) // default
                 .displayer(displayer) // default
                 .handler(new Handler()) // default

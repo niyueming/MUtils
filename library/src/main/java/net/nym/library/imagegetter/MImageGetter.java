@@ -24,7 +24,7 @@ public class MImageGetter implements Html.ImageGetter {
         // 不存在文件时返回默认图片，并异步加载网络图片
         Resources res = BaseApplication.getAppResources();
         URLDrawable defaultDrawable = new URLDrawable(
-                res.getDrawable(R.drawable.ic_launcher));
+                res.getDrawable(R.drawable.ic_drawer));
 
         if (!URLUtil.isNetworkUrl(source)){
             return defaultDrawable;
