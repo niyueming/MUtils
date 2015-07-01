@@ -10,14 +10,18 @@
 
 package net.nym.library.util;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -72,6 +76,47 @@ public class ImageUtils {
             bitmap.recycle();
         }
         return bmp;
+    }
+
+    public static void dealDegree(Context context,Uri uri){
+        if (uri == null){
+            return;
+        }
+        if (!"content".equals(uri.getScheme())){
+            return;
+        }
+        String realPath = getRealPathFromURI(context,uri);
+        int degree = readPictureDegree(realPath);
+        if (degree != 0){
+            Bitmap bmp = BitmapFactory.decodeFile(realPath);
+            bmp = rotateBitmap(bmp,degree);
+            try {
+                FileOutputStream out = new FileOutputStream(realPath);
+                bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 更具URI获取文件路径
+     *
+     * @param contentUri
+     * @return
+     */
+    public static String getRealPathFromURI( Context context,Uri contentUri) {
+        String res = null;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(contentUri, proj, null,
+                null, null);
+        if (cursor.moveToFirst()) {
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
     }
 
     public static Bitmap compressImageSize(String srcPath,int targetW,int targetH) {
