@@ -10,7 +10,48 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+
+/**
+ * 多渠道打包
+ *在AndroidMinfest.xml文件里添加以下信息：
+ * <meta-data
+        android:name="UMENG_CHANNEL"
+        android:value="${UMENG_CHANNEL_VALUE}" />
+
+
+ **/
+//        manifestPlaceholders = [ UMENG_CHANNEL_VALUE:"own" ]
     }
+
+//    productFlavors {
+//        own{
+//            manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//        }
+//        wandoujia{
+//            manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//        }
+//        _360{
+//            manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//        }
+//        yingyongbao{
+//            manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//        }
+//        xiaomi{
+//            manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//        }
+//        baidu{
+//            manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//        }
+//        huawei{
+//            manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//        }
+//        jifeng{
+//            manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//        }
+//    }
+//        productFlavors.all {
+//            flavor ->flavor.manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//        }
 
     signingConfigs {
         release {

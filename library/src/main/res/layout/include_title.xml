@@ -13,7 +13,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen48"
+        android:layout_height="@dimen/title_height"
         android:background="@drawable/title_bg">
 
         <RelativeLayout
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dimen15"
-                 />
+                />
 
             <TextView
                 android:id="@+id/top_id_back"
@@ -49,8 +49,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dimen5"
-            android:layout_marginRight="@dimen/dimen15"
+            android:paddingRight="@dimen/dimen10"
             android:gravity="center_vertical">
 
             <TextView
@@ -74,6 +73,8 @@
             android:layout_marginLeft="@dimen/dimen25"
             android:layout_marginRight="@dimen/dimen25"
             android:gravity="center"
+            android:singleLine="true"
+
             android:text=""
             android:textSize="@dimen/size16" />
 

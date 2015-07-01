@@ -30,6 +30,8 @@
     <dimen name="dimen160">160dp</dimen>
     <dimen name="dimen200">200dp</dimen>
 
+    <dimen name="title_height">48dp</dimen>
+
     <!--字体大小  -->
     <dimen name="size10">10sp</dimen>
     <dimen name="size12">12sp</dimen>

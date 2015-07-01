@@ -26,7 +26,7 @@ public class BaseActivity extends AppCompatActivity {
     public static final int DIALOG_LOADING = 0;//访问网络对话框标签
 
     private FrameLayout layoutContent;
-    private RelativeLayout layoutBack;
+    private RelativeLayout layoutBack,layoutRight;
     private LinearLayout layoutTop;
     private TextView mTxtBack;
     private TextView mTxtTitle;
@@ -50,6 +50,7 @@ public class BaseActivity extends AppCompatActivity {
 
         layoutTop = (LinearLayout) findViewById(R.id.layout_root_top);
         layoutBack = (RelativeLayout) findViewById(R.id.layout_top_back);
+        layoutRight = (RelativeLayout) findViewById(R.id.layout_top_right);
         layoutContent = (FrameLayout) findViewById(R.id.layout_root_content);
 
         mTxtBack = (TextView) layoutTop.findViewById(R.id.top_id_back);
@@ -187,7 +188,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void setRightOnClickListener(View.OnClickListener clickListener)
     {
-        mTxtRight.setOnClickListener(clickListener);
+        layoutRight.setOnClickListener(clickListener);
     }
 
     public void setRightText(String text)
