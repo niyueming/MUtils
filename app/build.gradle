@@ -10,6 +10,8 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        // dex突破65535的限制
+        multiDexEnabled true
 
 /**
  * 多渠道打包
@@ -61,12 +63,17 @@ android {
 
     buildTypes {
         release {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            zipAlignEnabled true
             minifyEnabled true      //新版的替代方法
 //            runProguard true
             proguardFiles 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
             minifyEnabled false      //新版的替代方法
 //            runProguard true
             proguardFiles 'proguard-rules.pro'
