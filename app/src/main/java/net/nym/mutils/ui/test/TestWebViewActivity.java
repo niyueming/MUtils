@@ -70,6 +70,7 @@ public class TestWebViewActivity extends ActionBarActivity {
         }
         mWebView.getSettings().setAllowFileAccess(true);
         mWebView.getSettings().setPluginState(WebSettings.PluginState.ON);
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         /**
          * Sets whether the WebView loads pages in overview mode, that is,
          * zooms out the content to fit on screen by width. This setting is
