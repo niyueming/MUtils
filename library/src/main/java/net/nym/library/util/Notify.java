@@ -12,14 +12,14 @@
  */
 package net.nym.library.util;
 
-import java.util.Calendar;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat.Builder;
+
+import java.util.Calendar;
 
 /**
  * Provides static methods for creating and showing notifications to the user.
@@ -57,7 +57,7 @@ public class Notify {
 
     //build the pending intent that will start the appropriate activity
     PendingIntent pendingIntent = PendingIntent.getActivity(context,
-        3, intent, 0);
+        3, intent,  PendingIntent.FLAG_UPDATE_CURRENT);
 
     //build the notification
     Builder notificationCompat = new Builder(context);
