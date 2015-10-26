@@ -50,8 +50,8 @@ public class TestWebViewActivity extends ActionBarActivity {
     private String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_web_view);
 //        url = "http://wsq.qq.com/reflow/255443386";
         url = "http://www.52kids.com.cn/school/share/feedback";
